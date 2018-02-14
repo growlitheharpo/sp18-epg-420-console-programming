@@ -27,8 +27,6 @@ namespace UnityEditor
 		public void Draw()
 		{
 			//GUI.Box(rect, title, style);
-			var content = EditorGUIUtility.IconContent("node0 hex");
-			style.normal.background = content.image as Texture2D;
 			
 			GUI.Box(rect, title, style);
 		}
