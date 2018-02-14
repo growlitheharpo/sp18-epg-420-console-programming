@@ -9,7 +9,26 @@ namespace UnityEditor
 
         public static void CreateNewWindow(DialogCharacter dialogCharacter)
         {
-            throw new System.NotImplementedException();
+            mEditingCharacter = dialogCharacter;
+            NodeEditorWindow window = GetWindow<NodeEditorWindow>();
+            window.titleContent = new GUIContent("Node Dialog Editor");
+        }
+
+        private void OnGUI()
+        {
+            DrawNodes();
+            ProcessEvents(Event.current);
+
+            if (GUI.changed)
+                Repaint();
+        }
+
+        private void DrawNodes()
+        {
+        }
+
+        private void ProcessEvents(Event current)
+        {
         }
     }
 }
