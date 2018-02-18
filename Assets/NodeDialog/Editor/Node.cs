@@ -9,7 +9,7 @@ namespace UnityEditor
         private string mTitle;
 
         private GUIStyle mStyle;
-		private bool mIsDragged;
+		private bool mIsDragged, mIsSelected;
 		private NodeConnectionPoint mInPoint, mOutPoint;
 
 	    public Rect rect { get { return mRect; } }
@@ -34,6 +34,15 @@ namespace UnityEditor
 		{
 			mInPoint.Draw();
 			mOutPoint.Draw();
+
+			if (mIsDragged || mIsSelected)
+			{
+				GUI.SetNextControlName("MyNodeName");
+				GUI.FocusControl("MyNodeName");
+			}
+			else
+				GUI.FocusControl("");
+
 			GUI.Box(rect, title, style);
 		}
 
@@ -47,10 +56,17 @@ namespace UnityEditor
 						if (rect.Contains(e.mousePosition))
 						{
 							mIsDragged = true;
+							mIsSelected = true;
 							GUI.changed = true;
+							return true;
 						}
-						else
-							GUI.changed = false;
+
+						mIsDragged = false;
+						if (mIsSelected)
+						{
+							mIsSelected = false;
+							return true;
+						}
 					}
 					break;
 				case EventType.MouseUp:

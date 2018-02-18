@@ -26,7 +26,8 @@ namespace UnityEditor
 			mNodeStyle = new GUIStyle
 			{
 				border = new RectOffset(25, 25, 7, 7),
-				normal = { background = EditorGUIUtility.IconContent("node0 hex").image as Texture2D }
+				normal = { background = EditorGUIUtility.IconContent("node0 hex").image as Texture2D },
+				focused ={ background = EditorGUIUtility.IconContent("node0 hex on").image as Texture2D }
 			};
 
 			mInConnectionStyle = new GUIStyle
