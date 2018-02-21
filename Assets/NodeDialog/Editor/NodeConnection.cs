@@ -8,6 +8,9 @@ namespace UnityEditor
 		private NodeConnectionPoint mInPoint, mOutPoint;
 		private Action<NodeConnection> mOnClickRemoveConnectionDelegate;
 
+		public Node inNode { get { return mInPoint.node; } }
+		public Node outNode { get { return mOutPoint.node; } }
+
 		public NodeConnection(NodeConnectionPoint inPoint, NodeConnectionPoint outPoint, Action<NodeConnection> onRemove)
 		{
 			mInPoint = inPoint;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using NodeDialog;
 using UnityEngine;
 
@@ -15,6 +16,7 @@ namespace UnityEditor
 			window.titleContent = new GUIContent("Node Dialog Editor");
 		}
 
+		private Vector2 mDrag;
 		private List<Node> mNodes;
 		private List<NodeConnection> mConnections;
 		private GUIStyle mNodeStyle, mInConnectionStyle, mOutConnectionStyle;
@@ -23,6 +25,7 @@ namespace UnityEditor
 
 		private void OnEnable()
 		{
+			mDrag = Vector2.zero;
 			mNodeStyle = new GUIStyle
 			{
 				border = new RectOffset(25, 25, 7, 7),
@@ -47,6 +50,10 @@ namespace UnityEditor
 
 		private void OnGUI()
 		{
+			DrawBackground();
+			DrawGrid(12.0f, Color.white * 0.420f);
+			DrawGrid(120.0f, Color.white * 0.29f);
+
 			DrawNodes();
 			DrawConnections();
 
@@ -55,6 +62,34 @@ namespace UnityEditor
 
 			if (GUI.changed)
 				Repaint();
+		}
+
+		private void DrawBackground()
+		{
+			Color oldCol = GUI.color;
+			GUI.color = new Color(0.451f, 0.451f, 0.451f, 1.0f);
+			GUI.DrawTexture(new Rect(0.0f, 0.0f, position.width, position.height), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill);
+			GUI.color = oldCol;
+		}
+
+		private void DrawGrid(float spacing, Color col)
+		{
+			int widthDivs = Mathf.CeilToInt(position.width / spacing);
+			int heightDivs = Mathf.CeilToInt(position.height / spacing);
+
+			Handles.BeginGUI();
+			Handles.color = new Color(col.r, col.g, col.b, 1.0f);
+
+			// Draw the vertical lines
+			for (int i = 0; i < widthDivs; i++)
+				Handles.DrawLine(new Vector3(spacing * i, 0.0f, 0), new Vector3(spacing * i, position.height, 0.0f));
+
+			// Draw the horizontal lines
+			for (int i = 0; i < heightDivs; i++)
+				Handles.DrawLine(new Vector3(0.0f, spacing * i, 0), new Vector3(position.width, spacing * i, 0.0f));
+
+			Handles.color = Color.white;
+			Handles.EndGUI();
 		}
 
 		private void DrawConnections()
@@ -109,7 +144,7 @@ namespace UnityEditor
 			if (mNodes == null)
 				mNodes = new List<Node>();
 
-			mNodes.Add(new Node(mousePosition, 200.0f, 50.0f, mNodeStyle, mInConnectionStyle, mOutConnectionStyle, OnClickInConnection, OnClickOutConnection));
+			mNodes.Add(new Node(mousePosition, 200.0f, 50.0f, mNodeStyle, mInConnectionStyle, mOutConnectionStyle, OnRemoveNode, OnClickInConnection, OnClickOutConnection));
 		}
 
 		private void OnClickInConnection(NodeConnectionPoint point)
@@ -153,6 +188,13 @@ namespace UnityEditor
 		private void OnClickRemoveConnection(NodeConnection conn)
 		{
 			mConnections.Remove(conn);
+		}
+
+		private void OnRemoveNode(Node n)
+		{
+			if (mConnections != null)
+				mConnections.RemoveAll(x => x.inNode == n || x.outNode == n);
+			mNodes.Remove(n);
 		}
 	}
 }

@@ -11,16 +11,18 @@ namespace UnityEditor
         private GUIStyle mStyle;
 		private bool mIsDragged, mIsSelected;
 		private NodeConnectionPoint mInPoint, mOutPoint;
+		private Action<Node> mOnRemoveNode;
 
 	    public Rect rect { get { return mRect; } }
 		public string title { get { return mTitle; } }
 		public GUIStyle style { get { return mStyle; } }
 
-		public Node(Vector2 pos, float width, float height, GUIStyle nodeStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, Action<NodeConnectionPoint> onClickInPoint, Action<NodeConnectionPoint> onClickOutPoint)
+		public Node(Vector2 pos, float width, float height, GUIStyle nodeStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, Action<Node> onRemoveNode, Action<NodeConnectionPoint> onClickInPoint, Action<NodeConnectionPoint> onClickOutPoint)
 		{
 			mRect = new Rect(pos.x, pos.y, width, height);
 			mStyle = nodeStyle;
 
+			mOnRemoveNode = onRemoveNode;
 			mInPoint = new NodeConnectionPoint(this, ConnectionPointType.In, inPointStyle, onClickInPoint);
 			mOutPoint = new NodeConnectionPoint(this, ConnectionPointType.Out, outPointStyle, onClickOutPoint);
 		}
@@ -68,6 +70,11 @@ namespace UnityEditor
 							return true;
 						}
 					}
+					else if (e.button == 1 && rect.Contains(e.mousePosition))
+					{
+						ProcessContextMenu();
+						e.Use();
+					}
 					break;
 				case EventType.MouseUp:
 					mIsDragged = false;
@@ -84,6 +91,23 @@ namespace UnityEditor
 			}
 
 			return false;
+		}
+
+		private void ProcessContextMenu()
+		{
+			GenericMenu menu = new GenericMenu();
+			menu.AddItem(new GUIContent("Remove Node"), false, OnClickRemoveNode);
+			menu.ShowAsContext();
+		}
+
+		private void OnClickRemoveNode()
+		{
+#if NET_4_6
+				mOnRemoveNode?.Invoke(this);
+#else
+			if (mOnRemoveNode != null)
+				mOnRemoveNode.Invoke(this);
+#endif
 		}
 	}
 }
