@@ -70,7 +70,7 @@ namespace UnityEditor
 		/// </summary>
 		private void OnGUI()
 		{
-			if (mCachedCharacter != kEditingCharacter)
+			if (mCachedCharacter != kEditingCharacter || mCachedCharacter.GetNodes_Editor().Count != mNodes.Count)
 				InitializeFromCharacter();
 
 			DrawBackground();
@@ -173,10 +173,11 @@ namespace UnityEditor
 
 		private void OnRemoveNode(BaseDialogGraphNode n)
 		{
-			Undo.RecordObject(kEditingCharacter, "Delete Node");
-
+			//Undo.RecordObject(kEditingCharacter, "Delete Node");
+			Undo.RecordObjects(new Object[]{mCachedCharacter}, "Removed");
+			Undo.DestroyObjectImmediate(n.attachedNode);
 			mCachedCharacter.RemoveNode_Editor(n.attachedNode);
-			DestroyImmediate(n.attachedNode);
+			Undo.CollapseUndoOperations(Undo.GetCurrentGroup());
 			mNodes.Remove(n);
 		}
 	}
