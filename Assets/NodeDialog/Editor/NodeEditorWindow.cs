@@ -7,22 +7,23 @@ namespace UnityEditor
 {
 	public class NodeEditorWindow : EditorWindow
 	{
-		private static DialogCharacter mEditingCharacter;
+		private static DialogCharacter kEditingCharacter;
 
 		public static void CreateNewWindow(DialogCharacter dialogCharacter)
 		{
-			mEditingCharacter = dialogCharacter;
+			kEditingCharacter = dialogCharacter;
 			NodeEditorWindow window = GetWindow<NodeEditorWindow>();
 			window.titleContent = new GUIContent("Node Dialog Editor");
 		}
 
+		private DialogCharacter mCachedCharacter;
+		private List<BaseDialogGraphNode> mNodes;
 		private Vector2 mDrag;
-		private List<Node> mNodes;
-		private List<NodeConnection> mConnections;
 		private GUIStyle mNodeStyle, mInConnectionStyle, mOutConnectionStyle;
 
-		private NodeConnectionPoint mSelectedInPoint, mSelectedOutPoint;
-
+		/// <summary>
+		/// Setup all of the styles that we're going to use.
+		/// </summary>
 		private void OnEnable()
 		{
 			mDrag = Vector2.zero;
@@ -46,10 +47,32 @@ namespace UnityEditor
 				normal = { background = EditorGUIUtility.IconContent("btn right").image as Texture2D },
 				active = { background = EditorGUIUtility.IconContent("btn right on").image as Texture2D },
 			};
+
+			mNodes = new List<BaseDialogGraphNode>();
+			InitializeFromCharacter();
 		}
 
+		private void InitializeFromCharacter()
+		{
+			mNodes = new List<BaseDialogGraphNode>();
+
+			mCachedCharacter = kEditingCharacter;
+			if (mCachedCharacter == null)
+				return;
+
+			var nodes = mCachedCharacter.GetNodes_Editor();
+			foreach (BaseDialogNode n in nodes)
+				mNodes.Add(new BaseDialogGraphNode(n, mNodeStyle, OnRemoveNode));
+		}
+
+		/// <summary>
+		/// Draw the background and the nodes and then process events.
+		/// </summary>
 		private void OnGUI()
 		{
+			if (mCachedCharacter != kEditingCharacter)
+				InitializeFromCharacter();
+
 			DrawBackground();
 			DrawGrid(12.0f, Color.white * 0.420f);
 			DrawGrid(120.0f, Color.white * 0.29f);
@@ -94,13 +117,13 @@ namespace UnityEditor
 
 		private void DrawConnections()
 		{
-			if (mConnections == null)
+			/*if (mConnections == null)
 				return;
 
 			for (int i = 0; i < mConnections.Count; i++)
 			{
 				mConnections[i].Draw();
-			}
+			}*/
 		}
 
 		private void DrawNodes()
@@ -108,17 +131,17 @@ namespace UnityEditor
 			if (mNodes == null)
 				return;
 
-			foreach (Node node in mNodes)
+			foreach (BaseDialogGraphNode node in mNodes)
 				node.Draw();
 		}
 
 		private void ProcessNodeEvents(Event current)
 		{
-			if (mNodes != null)
-			{
-				for (int i = mNodes.Count - 1; i >= 0; --i)
-					GUI.changed = mNodes[i].ProcessEvents(current) || GUI.changed;
-			}
+			if (mNodes == null)
+				return;
+
+			for (int i = mNodes.Count - 1; i >= 0; --i)
+				GUI.changed = mNodes[i].ProcessEvents(current) || GUI.changed;
 		}
 
 		private void ProcessEvents(Event current)
@@ -141,59 +164,19 @@ namespace UnityEditor
 
 		private void OnClickAddNode(Vector2 mousePosition)
 		{
-			if (mNodes == null)
-				mNodes = new List<Node>();
+			BaseDialogNode newRealNode = CreateInstance<BaseDialogNode>();
+			mCachedCharacter.AddNode_Editor(newRealNode);
+			newRealNode.nodePosition = mousePosition;
 
-			mNodes.Add(new Node(mousePosition, 200.0f, 50.0f, mNodeStyle, mInConnectionStyle, mOutConnectionStyle, OnRemoveNode, OnClickInConnection, OnClickOutConnection));
+			mNodes.Add(new BaseDialogGraphNode(newRealNode, mNodeStyle, OnRemoveNode));
 		}
 
-		private void OnClickInConnection(NodeConnectionPoint point)
+		private void OnRemoveNode(BaseDialogGraphNode n)
 		{
-			mSelectedInPoint = point;
-			if (mSelectedOutPoint == null)
-				return;
+			Undo.RecordObject(kEditingCharacter, "Delete Node");
 
-			if (mSelectedOutPoint.node != mSelectedInPoint.node)
-				CreateConnection();
-
-			ClearConnectionSelection();
-		}
-
-		private void OnClickOutConnection(NodeConnectionPoint point)
-		{
-			mSelectedOutPoint = point;
-			if (mSelectedInPoint == null)
-				return;
-
-			if (mSelectedOutPoint.node != mSelectedInPoint.node)
-				CreateConnection();
-
-			ClearConnectionSelection();
-		}
-
-		private void CreateConnection()
-		{
-			if (mConnections == null)
-				mConnections = new List<NodeConnection>();
-
-			mConnections.Add(new NodeConnection(mSelectedInPoint, mSelectedOutPoint, OnClickRemoveConnection));
-		}
-
-		private void ClearConnectionSelection()
-		{
-			mSelectedInPoint = null;
-			mSelectedOutPoint = null;
-		}
-
-		private void OnClickRemoveConnection(NodeConnection conn)
-		{
-			mConnections.Remove(conn);
-		}
-
-		private void OnRemoveNode(Node n)
-		{
-			if (mConnections != null)
-				mConnections.RemoveAll(x => x.inNode == n || x.outNode == n);
+			mCachedCharacter.RemoveNode_Editor(n.attachedNode);
+			DestroyImmediate(n.attachedNode);
 			mNodes.Remove(n);
 		}
 	}
