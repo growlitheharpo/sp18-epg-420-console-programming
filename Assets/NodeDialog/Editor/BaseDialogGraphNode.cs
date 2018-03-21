@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using NodeDialog;
 using UnityEngine;
 
@@ -10,9 +8,9 @@ namespace UnityEditor
 	{
 		private const float WIDTH = 200.0f, HEIGHT = 50.0f;
 
-		private GUIStyle mStyle;
+		private readonly Action<BaseDialogGraphNode> mRemoveNodeCallback;
+		private readonly GUIStyle mStyle;
 		private bool mIsDragged, mIsSelected;
-		private Action<BaseDialogGraphNode> mRemoveNodeCallback;
 
 		public Rect rect { get { return new Rect(attachedNode.nodePosition, new Vector2(WIDTH, HEIGHT)); } }
 		public BaseDialogNode attachedNode { get; private set; }

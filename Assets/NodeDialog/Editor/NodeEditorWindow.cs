@@ -50,6 +50,20 @@ namespace UnityEditor
 
 			mNodes = new List<BaseDialogGraphNode>();
 			InitializeFromCharacter();
+
+			Undo.undoRedoPerformed += OnUndoRedoPerformed;
+		}
+
+		private void OnDisable()
+		{
+			Undo.undoRedoPerformed -= OnUndoRedoPerformed;
+		}
+
+		private void OnUndoRedoPerformed()
+		{
+			GUI.changed = true;
+			InitializeFromCharacter();
+			Repaint();
 		}
 
 		private void InitializeFromCharacter()
@@ -70,12 +84,15 @@ namespace UnityEditor
 		/// </summary>
 		private void OnGUI()
 		{
-			if (mCachedCharacter != kEditingCharacter || mCachedCharacter.GetNodes_Editor().Count != mNodes.Count)
-				InitializeFromCharacter();
-
 			DrawBackground();
 			DrawGrid(12.0f, Color.white * 0.420f);
 			DrawGrid(120.0f, Color.white * 0.29f);
+			
+			if (mCachedCharacter == null)
+				return;
+
+			if (mCachedCharacter != kEditingCharacter || mCachedCharacter.GetNodes_Editor().Count != mNodes.Count)
+				InitializeFromCharacter();
 
 			DrawNodes();
 			DrawConnections();
@@ -165,6 +182,10 @@ namespace UnityEditor
 		private void OnClickAddNode(Vector2 mousePosition)
 		{
 			BaseDialogNode newRealNode = CreateInstance<BaseDialogNode>();
+			
+			Undo.RegisterCompleteObjectUndo(mCachedCharacter, "Create New Node");
+			Undo.RegisterCreatedObjectUndo(newRealNode, "Create New Node");
+			
 			mCachedCharacter.AddNode_Editor(newRealNode);
 			newRealNode.nodePosition = mousePosition;
 
@@ -173,11 +194,9 @@ namespace UnityEditor
 
 		private void OnRemoveNode(BaseDialogGraphNode n)
 		{
-			//Undo.RecordObject(kEditingCharacter, "Delete Node");
-			Undo.RecordObjects(new Object[]{mCachedCharacter}, "Removed");
+			Undo.RegisterCompleteObjectUndo(mCachedCharacter, "Delete Node");
 			Undo.DestroyObjectImmediate(n.attachedNode);
 			mCachedCharacter.RemoveNode_Editor(n.attachedNode);
-			Undo.CollapseUndoOperations(Undo.GetCurrentGroup());
 			mNodes.Remove(n);
 		}
 	}
