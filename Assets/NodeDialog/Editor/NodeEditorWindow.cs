@@ -183,8 +183,8 @@ namespace UnityEditor
 		{
 			BaseDialogNode newRealNode = CreateInstance<BaseDialogNode>();
 			
-			Undo.RegisterCompleteObjectUndo(mCachedCharacter, "Create New Node");
 			Undo.RegisterCreatedObjectUndo(newRealNode, "Create New Node");
+			Undo.RecordObject(mCachedCharacter, "Create New Node");
 			
 			mCachedCharacter.AddNode_Editor(newRealNode);
 			newRealNode.nodePosition = mousePosition;
