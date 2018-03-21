@@ -40,29 +40,7 @@ namespace UnityEditor
 			switch (e.type)
 			{
 				case EventType.MouseDown:
-					if (e.button == 0)
-					{
-						if (rect.Contains(e.mousePosition))
-						{
-							mIsDragged = true;
-							mIsSelected = true;
-							GUI.changed = true;
-							return true;
-						}
-
-						mIsDragged = false;
-						if (mIsSelected)
-						{
-							mIsSelected = false;
-							return true;
-						}
-					}
-					else if (e.button == 1 && rect.Contains(e.mousePosition))
-					{
-						ProcessContextMenu();
-						e.Use();
-					}
-					break;
+					return HandleEventMouseDown(e);
 				case EventType.MouseUp:
 					mIsDragged = false;
 					break;
@@ -78,6 +56,47 @@ namespace UnityEditor
 			}
 
 			return false;
+		}
+
+		private bool HandleEventMouseDown(Event e)
+		{
+			if (e.button == 0) // left click
+			{
+				if (rect.Contains(e.mousePosition))
+				{
+					Select();
+					return true;
+				}
+				else if (mIsSelected)
+				{
+					Deselect();
+					return true;
+				}
+			}
+			else if (e.button == 1 && rect.Contains(e.mousePosition)) // right click
+			{
+				ProcessContextMenu();
+				e.Use();
+			}
+			
+			return false;
+		}
+
+		private void Select()
+		{
+			mIsDragged = true;
+			mIsSelected = true;
+
+			Selection.SetActiveObjectWithContext(attachedNode, attachedNode);
+		}
+
+		private void Deselect()
+		{
+			mIsSelected = false;
+			mIsDragged = false;
+
+			if (Selection.activeObject == attachedNode)
+				Selection.SetActiveObjectWithContext(null, null);
 		}
 
 		private void Drag(Vector2 delta)
