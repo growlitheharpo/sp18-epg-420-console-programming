@@ -12,6 +12,8 @@ namespace UnityEditor
 		private readonly GUIStyle mStyle;
 		private bool mIsDragged, mIsSelected;
 
+		private int mControlId;
+
 		public Rect rect { get { return new Rect(attachedNode.nodePosition, new Vector2(WIDTH, HEIGHT)); } }
 		public BaseDialogNode attachedNode { get; private set; }
 
@@ -24,15 +26,12 @@ namespace UnityEditor
 
 		public void Draw()
 		{
+			string nodeName = "NODE" + attachedNode.GetInstanceID();
+			GUI.SetNextControlName(nodeName);
+			
+			GUI.Box(rect, "Wow" + mIsSelected, mStyle);
 			if (mIsDragged || mIsSelected)
-			{
-				GUI.SetNextControlName("MyNodeName");
-				GUI.FocusControl("MyNodeName");
-			}
-			else
-				GUI.FocusControl("");
-
-			GUI.Box(rect, "Wow", mStyle);
+				GUI.FocusControl(nodeName);
 		}
 
 		public bool ProcessEvents(Event e)
