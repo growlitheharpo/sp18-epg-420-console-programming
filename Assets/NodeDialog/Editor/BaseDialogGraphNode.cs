@@ -9,10 +9,8 @@ namespace UnityEditor
 		private const float WIDTH = 200.0f, HEIGHT = 50.0f;
 
 		private readonly Action<BaseDialogGraphNode> mRemoveNodeCallback;
-		private readonly GUIStyle mStyle;
+		private readonly GUIStyle mMasterStyle;
 		private bool mIsDragged, mIsSelected;
-
-		private int mControlId;
 
 		public Rect rect { get { return new Rect(attachedNode.nodePosition, new Vector2(WIDTH, HEIGHT)); } }
 		public BaseDialogNode attachedNode { get; private set; }
@@ -20,7 +18,7 @@ namespace UnityEditor
 		public BaseDialogGraphNode(BaseDialogNode node, GUIStyle style, Action<BaseDialogGraphNode> removeNodeCallback)
 		{
 			attachedNode = node;
-			mStyle = style;
+			mMasterStyle = style;
 			mRemoveNodeCallback = removeNodeCallback;
 		}
 
@@ -29,9 +27,12 @@ namespace UnityEditor
 			string nodeName = "NODE" + attachedNode.GetInstanceID();
 			GUI.SetNextControlName(nodeName);
 			
-			GUI.Box(rect, "Wow" + mIsSelected, mStyle);
+			// TODO: Why doesn't focusing work anymore?
+			GUIStyle styleCopy = new GUIStyle(mMasterStyle);
 			if (mIsDragged || mIsSelected)
-				GUI.FocusControl(nodeName);
+				styleCopy.normal = mMasterStyle.focused;
+
+			GUI.Box(rect, "Wow" + mIsSelected, styleCopy);
 		}
 
 		public bool ProcessEvents(Event e)
