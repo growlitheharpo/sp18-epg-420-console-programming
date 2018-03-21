@@ -35,8 +35,6 @@ namespace NodeDialog
 
 		private void OnValidate()
 		{
-			Debug.Log("VALIDATED");
-
 			string path = UnityEditor.AssetDatabase.GetAssetPath(this);
 			var subassets = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(path);
 
