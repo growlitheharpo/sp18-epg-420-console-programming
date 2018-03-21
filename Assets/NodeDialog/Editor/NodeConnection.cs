@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UnityEditor
 {
-	public class NodeConnection
+	/*public class NodeConnection
 	{
 		private NodeConnectionPoint mInPoint, mOutPoint;
 		private Action<NodeConnection> mOnClickRemoveConnectionDelegate;
@@ -41,5 +41,5 @@ namespace UnityEditor
 #endif
 			}
 		}
-	}
+	}*/
 }
