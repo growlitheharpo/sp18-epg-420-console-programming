@@ -18,8 +18,8 @@ namespace UnityEditor
 
 		private CharacterDialogAsset mCachedDialogAsset;
 		private List<BaseDialogGraphNode> mNodes;
+		private GUIStyle mNodeStyle;
 		private Vector2 mDrag;
-		private GUIStyle mNodeStyle, mInConnectionStyle, mOutConnectionStyle;
 
 		/// <summary>
 		/// Setup all of the styles that we're going to use.
@@ -41,20 +41,6 @@ namespace UnityEditor
 					textColor = Color.white,
 				},
 				alignment = TextAnchor.MiddleCenter,
-			};
-
-			mInConnectionStyle = new GUIStyle
-			{
-				border = new RectOffset(4, 4, 12, 12),
-				normal = { background = EditorGUIUtility.IconContent("btn left").image as Texture2D },
-				active = { background = EditorGUIUtility.IconContent("btn left on").image as Texture2D }
-			};
-
-			mOutConnectionStyle = new GUIStyle
-			{
-				border = new RectOffset(4, 4, 12, 12),
-				normal = { background = EditorGUIUtility.IconContent("btn right").image as Texture2D },
-				active = { background = EditorGUIUtility.IconContent("btn right on").image as Texture2D },
 			};
 
 			mNodes = new List<BaseDialogGraphNode>();
