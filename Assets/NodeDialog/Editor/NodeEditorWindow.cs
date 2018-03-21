@@ -205,8 +205,8 @@ namespace UnityEditor
 		private void OnRemoveNode(BaseDialogGraphNode n)
 		{
 			Undo.RegisterCompleteObjectUndo(mCachedDialogAsset, "Delete Node");
-			Undo.DestroyObjectImmediate(n.attachedNode);
-			mCachedDialogAsset.RemoveNode_Editor(n.attachedNode);
+			Undo.DestroyObjectImmediate(n.associatedNode);
+			mCachedDialogAsset.RemoveNode_Editor(n.associatedNode);
 			EditorUtility.SetDirty(mCachedDialogAsset);
 			mNodes.Remove(n);
 		}

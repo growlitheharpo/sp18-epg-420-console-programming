@@ -12,19 +12,19 @@ namespace UnityEditor
 		private readonly GUIStyle mMasterStyle;
 		private bool mIsDragged, mIsSelected;
 
-		public Rect rect { get { return new Rect(attachedNode.nodePosition, new Vector2(WIDTH, HEIGHT)); } }
-		public BaseDialogNode attachedNode { get; private set; }
+		public Rect rect { get { return new Rect(associatedNode.nodePosition, new Vector2(WIDTH, HEIGHT)); } }
+		public BaseDialogNode associatedNode { get; private set; }
 
 		public BaseDialogGraphNode(BaseDialogNode node, GUIStyle style, Action<BaseDialogGraphNode> removeNodeCallback)
 		{
-			attachedNode = node;
+			associatedNode = node;
 			mMasterStyle = style;
 			mRemoveNodeCallback = removeNodeCallback;
 		}
 
 		public void Draw()
 		{
-			string nodeName = "NODE" + attachedNode.GetInstanceID();
+			string nodeName = "NODE" + associatedNode.GetInstanceID();
 			GUI.SetNextControlName(nodeName);
 			
 			// TODO: Why doesn't focusing work anymore?
@@ -87,7 +87,7 @@ namespace UnityEditor
 			mIsDragged = true;
 			mIsSelected = true;
 
-			Selection.SetActiveObjectWithContext(attachedNode, attachedNode);
+			Selection.SetActiveObjectWithContext(associatedNode, associatedNode);
 		}
 
 		private void Deselect()
@@ -95,13 +95,13 @@ namespace UnityEditor
 			mIsSelected = false;
 			mIsDragged = false;
 
-			if (Selection.activeObject == attachedNode)
+			if (Selection.activeObject == associatedNode)
 				Selection.SetActiveObjectWithContext(null, null);
 		}
 
 		private void Drag(Vector2 delta)
 		{
-			attachedNode.nodePosition += delta;
+			associatedNode.nodePosition += delta;
 		}
 
 		private void ProcessContextMenu()
