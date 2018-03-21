@@ -7,16 +7,16 @@ namespace UnityEditor
 {
 	public class NodeEditorWindow : EditorWindow
 	{
-		private static DialogCharacter kEditingCharacter;
+		private static CharacterDialogAsset kEditingDialog;
 
 		public static void CreateNewWindow(DialogCharacter dialogCharacter)
 		{
-			kEditingCharacter = dialogCharacter;
+			kEditingDialog = dialogCharacter.dialogAsset;
 			NodeEditorWindow window = GetWindow<NodeEditorWindow>();
 			window.titleContent = new GUIContent("Node Dialog Editor");
 		}
 
-		private DialogCharacter mCachedCharacter;
+		private CharacterDialogAsset mCachedDialogAsset;
 		private List<BaseDialogGraphNode> mNodes;
 		private Vector2 mDrag;
 		private GUIStyle mNodeStyle, mInConnectionStyle, mOutConnectionStyle;
@@ -70,11 +70,11 @@ namespace UnityEditor
 		{
 			mNodes = new List<BaseDialogGraphNode>();
 
-			mCachedCharacter = kEditingCharacter;
-			if (mCachedCharacter == null)
+			mCachedDialogAsset = kEditingDialog;
+			if (mCachedDialogAsset == null)
 				return;
 
-			var nodes = mCachedCharacter.GetNodes_Editor();
+			var nodes = mCachedDialogAsset.GetNodes_Editor();
 			foreach (BaseDialogNode n in nodes)
 				mNodes.Add(new BaseDialogGraphNode(n, mNodeStyle, OnRemoveNode));
 		}
@@ -88,10 +88,10 @@ namespace UnityEditor
 			DrawGrid(12.0f, Color.white * 0.420f);
 			DrawGrid(120.0f, Color.white * 0.29f);
 			
-			if (mCachedCharacter == null)
+			if (mCachedDialogAsset == null)
 				return;
 
-			if (mCachedCharacter != kEditingCharacter || mCachedCharacter.GetNodes_Editor().Count != mNodes.Count)
+			if (mCachedDialogAsset != kEditingDialog || mCachedDialogAsset.GetNodes_Editor().Count != mNodes.Count)
 				InitializeFromCharacter();
 
 			DrawNodes();
@@ -184,9 +184,10 @@ namespace UnityEditor
 			BaseDialogNode newRealNode = CreateInstance<BaseDialogNode>();
 			
 			Undo.RegisterCreatedObjectUndo(newRealNode, "Create New Node");
-			Undo.RecordObject(mCachedCharacter, "Create New Node");
+			Undo.RecordObject(mCachedDialogAsset, "Create New Node");
 			
-			mCachedCharacter.AddNode_Editor(newRealNode);
+			mCachedDialogAsset.AddNode_Editor(newRealNode);
+			EditorUtility.SetDirty(mCachedDialogAsset);
 			newRealNode.nodePosition = mousePosition;
 
 			mNodes.Add(new BaseDialogGraphNode(newRealNode, mNodeStyle, OnRemoveNode));
@@ -194,9 +195,10 @@ namespace UnityEditor
 
 		private void OnRemoveNode(BaseDialogGraphNode n)
 		{
-			Undo.RegisterCompleteObjectUndo(mCachedCharacter, "Delete Node");
+			Undo.RegisterCompleteObjectUndo(mCachedDialogAsset, "Delete Node");
 			Undo.DestroyObjectImmediate(n.attachedNode);
-			mCachedCharacter.RemoveNode_Editor(n.attachedNode);
+			mCachedDialogAsset.RemoveNode_Editor(n.attachedNode);
+			EditorUtility.SetDirty(mCachedDialogAsset);
 			mNodes.Remove(n);
 		}
 	}
