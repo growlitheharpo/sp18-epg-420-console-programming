@@ -8,8 +8,10 @@ namespace NodeDialog
 	public class CharacterDialogAsset : ScriptableObject
 	{
 		[SerializeField] private List<BaseDialogNode> mNodes;
+		[SerializeField] private List<DialogNodeConnection> mConnections;
 
 #if UNITY_EDITOR
+
 		public List<BaseDialogNode> GetNodes_Editor()
 		{
 			return mNodes ?? (mNodes = new List<BaseDialogNode>());
@@ -33,6 +35,29 @@ namespace NodeDialog
 			OnValidate();
 		}
 
+		public List<DialogNodeConnection> GetConnections_Editor()
+		{
+			return mConnections ?? (mConnections = new List<DialogNodeConnection>());
+		}
+
+		public void AddNode_Editor(DialogNodeConnection newNode)
+		{
+			if (mConnections == null)
+				mConnections = new List<DialogNodeConnection>();
+
+			mConnections.Add(newNode);
+			OnValidate();
+		}
+
+		public void RemoveNode_Editor(DialogNodeConnection node)
+		{
+			if (mConnections == null)
+				mConnections = new List<DialogNodeConnection>();
+
+			mConnections.Remove(node);
+			OnValidate();
+		}
+
 		private void OnValidate()
 		{
 			string path = UnityEditor.AssetDatabase.GetAssetPath(this);
@@ -47,9 +72,19 @@ namespace NodeDialog
 				node.hideFlags = HideFlags.HideInHierarchy;
 			}
 
+			foreach (DialogNodeConnection conn in mConnections)
+			{
+				if (subassets.Contains(conn))
+					continue;
+				
+				UnityEditor.AssetDatabase.AddObjectToAsset(conn, this);
+				conn.hideFlags = HideFlags.HideInHierarchy;
+			}
+
 			UnityEditor.AssetDatabase.SaveAssets();
 			UnityEditor.AssetDatabase.Refresh();
 		}
 	}
+
 #endif
 }

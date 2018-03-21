@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using NodeDialog;
 using UnityEngine;
 
@@ -18,6 +17,7 @@ namespace UnityEditor
 
 		private CharacterDialogAsset mCachedDialogAsset;
 		private List<BaseDialogGraphNode> mNodes;
+		private List<DialogNodeGraphConnection> mConnections;
 		private GUIStyle mNodeStyle;
 		private Vector2 mDrag;
 
@@ -44,16 +44,26 @@ namespace UnityEditor
 			};
 
 			mNodes = new List<BaseDialogGraphNode>();
+			mConnections = new List<DialogNodeGraphConnection>();
+			
 			InitializeFromCharacter();
 
 			Undo.undoRedoPerformed += OnUndoRedoPerformed;
 		}
 
+		/// <summary>
+		/// Clear our delegate from undoRedo so that we aren't kept alive in GC.
+		/// </summary>
 		private void OnDisable()
 		{
 			Undo.undoRedoPerformed -= OnUndoRedoPerformed;
 		}
 
+		/// <summary>
+		/// Handle Unity notifiying us of an undo or redo.
+		/// Because we don't get any more details, we're forced to fully regenerate
+		/// the graph and do a repaint.
+		/// </summary>
 		private void OnUndoRedoPerformed()
 		{
 			GUI.changed = true;
@@ -61,9 +71,13 @@ namespace UnityEditor
 			Repaint();
 		}
 
+		/// <summary>
+		/// Initialize the window from a character.
+		/// </summary>
 		private void InitializeFromCharacter()
 		{
 			mNodes = new List<BaseDialogGraphNode>();
+			mConnections = new List<DialogNodeGraphConnection>();
 
 			mCachedDialogAsset = kEditingDialog;
 			if (mCachedDialogAsset == null)
@@ -72,6 +86,10 @@ namespace UnityEditor
 			var nodes = mCachedDialogAsset.GetNodes_Editor();
 			foreach (BaseDialogNode n in nodes)
 				mNodes.Add(new BaseDialogGraphNode(n, mNodeStyle, OnRemoveNode));
+
+			var conns = mCachedDialogAsset.GetConnections_Editor();
+			foreach (DialogNodeConnection c in conns)
+				mConnections.Add(new DialogNodeGraphConnection(c));
 		}
 
 		/// <summary>
@@ -99,6 +117,9 @@ namespace UnityEditor
 				Repaint();
 		}
 
+		/// <summary>
+		/// Draw a dark textured background across the entire window.
+		/// </summary>
 		private void DrawBackground()
 		{
 			Color oldCol = GUI.color;
@@ -107,6 +128,11 @@ namespace UnityEditor
 			GUI.color = oldCol;
 		}
 
+		/// <summary>
+		/// Draw a grid at the given intervals and of the provided color across the entire window.
+		/// </summary>
+		/// <param name="spacing">How many pixels between each line.</param>
+		/// <param name="col">The color of the line.</param>
 		private void DrawGrid(float spacing, Color col)
 		{
 			int widthDivs = Mathf.CeilToInt(position.width / spacing);
@@ -127,17 +153,21 @@ namespace UnityEditor
 			Handles.EndGUI();
 		}
 
+		/// <summary>
+		/// Loop through every connection and draw each.
+		/// </summary>
 		private void DrawConnections()
 		{
-			/*if (mConnections == null)
+			if (mConnections == null)
 				return;
-
-			for (int i = 0; i < mConnections.Count; i++)
-			{
-				mConnections[i].Draw();
-			}*/
+			
+			foreach (DialogNodeGraphConnection c in mConnections)
+				c.Draw();
 		}
 
+		/// <summary>
+		/// Loop through every node and draw each.
+		/// </summary>
 		private void DrawNodes()
 		{
 			if (mNodes == null)
@@ -147,6 +177,10 @@ namespace UnityEditor
 				node.Draw();
 		}
 
+		/// <summary>
+		/// Loop backwards through all of the nodes and allow them to process their events.
+		/// NOTE: We go backwards because the ones at the end are drawn last (i.e., on top)
+		/// </summary>
 		private void ProcessNodeEvents(Event current)
 		{
 			if (mNodes == null)
@@ -156,6 +190,9 @@ namespace UnityEditor
 				GUI.changed = mNodes[i].ProcessEvents(current) || GUI.changed;
 		}
 
+		/// <summary>
+		/// Process events for the canvas as a whole.
+		/// </summary>
 		private void ProcessEvents(Event current)
 		{
 			switch (current.type)
@@ -167,6 +204,9 @@ namespace UnityEditor
 			}
 		}
 
+		/// <summary>
+		/// Creates a right-click menu with the associated options.
+		/// </summary>
 		private void ProcessContextMenu(Vector2 mousePosition)
 		{
 			GenericMenu rightClickMenu = new GenericMenu();
@@ -174,6 +214,10 @@ namespace UnityEditor
 			rightClickMenu.ShowAsContext();
 		}
 
+		/// <summary>
+		/// Handle the user clicking on "Add node" in the context menu.
+		/// </summary>
+		/// <param name="mousePosition">The position of the mouse when right click was first pressed.</param>
 		private void OnClickAddNode(Vector2 mousePosition)
 		{
 			BaseDialogNode newRealNode = CreateInstance<BaseDialogNode>();
@@ -188,12 +232,21 @@ namespace UnityEditor
 			mNodes.Add(new BaseDialogGraphNode(newRealNode, mNodeStyle, OnRemoveNode));
 		}
 
+		/// <summary>
+		/// Handle the user attempting to remove a node.
+		/// </summary>
+		/// <param name="n">The node that is being removed.</param>
 		private void OnRemoveNode(BaseDialogGraphNode n)
 		{
+			// Delete the asset, but allow it to be undone.
 			Undo.RegisterCompleteObjectUndo(mCachedDialogAsset, "Delete Node");
 			Undo.DestroyObjectImmediate(n.associatedNode);
 			mCachedDialogAsset.RemoveNode_Editor(n.associatedNode);
+
+			// Flag the asset as dirty so that Unity updates it.
 			EditorUtility.SetDirty(mCachedDialogAsset);
+
+			// Remove the graph node from our list.
 			mNodes.Remove(n);
 		}
 	}
