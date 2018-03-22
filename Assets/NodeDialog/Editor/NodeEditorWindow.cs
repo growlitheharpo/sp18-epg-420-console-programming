@@ -220,13 +220,8 @@ namespace UnityEditor
 		/// <param name="mousePosition">The position of the mouse when right click was first pressed.</param>
 		private void OnClickAddNode(Vector2 mousePosition)
 		{
-			BaseDialogNode newRealNode = CreateInstance<BaseDialogNode>();
-			
-			Undo.RegisterCreatedObjectUndo(newRealNode, "Create New Node");
-			Undo.RecordObject(mCachedDialogAsset, "Create New Node");
-			
-			mCachedDialogAsset.AddNode_Editor(newRealNode);
-			EditorUtility.SetDirty(mCachedDialogAsset);
+			// Create a new asset, but allow it to be undone.
+			BaseDialogNode newRealNode = mCachedDialogAsset.AddNode_Editor();
 			newRealNode.nodePosition = mousePosition;
 
 			mNodes.Add(new BaseDialogGraphNode(newRealNode, mNodeStyle, OnRemoveNode));
@@ -239,12 +234,7 @@ namespace UnityEditor
 		private void OnRemoveNode(BaseDialogGraphNode n)
 		{
 			// Delete the asset, but allow it to be undone.
-			Undo.RegisterCompleteObjectUndo(mCachedDialogAsset, "Delete Node");
-			Undo.DestroyObjectImmediate(n.associatedNode);
 			mCachedDialogAsset.RemoveNode_Editor(n.associatedNode);
-
-			// Flag the asset as dirty so that Unity updates it.
-			EditorUtility.SetDirty(mCachedDialogAsset);
 
 			// Remove the graph node from our list.
 			mNodes.Remove(n);

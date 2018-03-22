@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace NodeDialog
@@ -12,30 +13,61 @@ namespace NodeDialog
 
 #if UNITY_EDITOR
 
-		public List<BaseDialogNode> GetNodes_Editor()
+		/// <summary>
+		/// Returns this asset's list of nodes.
+		/// </summary>
+		[NotNull] public List<BaseDialogNode> GetNodes_Editor()
 		{
 			return mNodes ?? (mNodes = new List<BaseDialogNode>());
 		}
 
-		public void AddNode_Editor(BaseDialogNode newNode)
+		/// <summary>
+		/// Adds a new node to the list and returns it, but in a way that allows it to be undone.
+		/// Registers all changes into the UnityEditor.Undo system.
+		/// </summary>
+		/// <returns>The newly created node.</returns>
+		[NotNull] public BaseDialogNode AddNode_Editor()
 		{
 			if (mNodes == null)
 				mNodes = new List<BaseDialogNode>();
 
+			BaseDialogNode newNode = CreateInstance<BaseDialogNode>();
+
+			UnityEditor.Undo.RegisterCreatedObjectUndo(newNode, "Create New Node");
+			UnityEditor.Undo.RecordObject(this, "Create New Node");
+
 			mNodes.Add(newNode);
 			OnValidate();
+
+			UnityEditor.EditorUtility.SetDirty(this);
+			return newNode;
 		}
 
+		/// <summary>
+		/// Removes the given node from our list, but in a way that allows it to be undone.
+		/// Registers all changes into the UnityEditor.Undo system.
+		/// </summary>
+		/// <param name="node">The node to remove.</param>
 		public void RemoveNode_Editor(BaseDialogNode node)
 		{
 			if (mNodes == null)
 				mNodes = new List<BaseDialogNode>();
 
+			// Delete the asset, but in a way that allows it to be undone.
+			UnityEditor.Undo.RegisterCompleteObjectUndo(this, "Delete Node");
+			UnityEditor.Undo.DestroyObjectImmediate(node);
+
 			mNodes.Remove(node);
 			OnValidate();
+
+			// Flag our asset as dirty so that Unity updates it.
+			UnityEditor.EditorUtility.SetDirty(this);
 		}
 
-		public List<DialogNodeConnection> GetConnections_Editor()
+		/// <summary>
+		/// Returns this asset's list of connections.
+		/// </summary>
+		[NotNull] public List<DialogNodeConnection> GetConnections_Editor()
 		{
 			return mConnections ?? (mConnections = new List<DialogNodeConnection>());
 		}
