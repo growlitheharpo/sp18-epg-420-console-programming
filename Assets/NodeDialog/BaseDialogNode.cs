@@ -28,7 +28,7 @@ namespace NodeDialog
 		/// </summary>
 		public List<DialogNodeConnection> outConnections
 		{
-			get { return mOutConnections; }
+			get { return mOutConnections ?? (mOutConnections = new List<DialogNodeConnection>()); }
 			set { mOutConnections = value; }
 		}
 

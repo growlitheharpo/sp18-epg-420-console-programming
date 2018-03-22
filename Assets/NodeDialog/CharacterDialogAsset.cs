@@ -98,10 +98,12 @@ namespace NodeDialog
 			DialogNodeConnection newConnection = CreateInstance<DialogNodeConnection>();
 			newConnection.inNode = node1;
 			newConnection.outNode = node2;
-
+			
 			UnityEditor.Undo.RegisterCreatedObjectUndo(newConnection, "Create New Connection");
+			UnityEditor.Undo.RecordObject(node1, "Create New Connection");
 			UnityEditor.Undo.RecordObject(this, "Create New Connection");
 
+			node1.outConnections.Add(newConnection);
 			mConnections.Add(newConnection);
 			OnValidate();
 
@@ -119,15 +121,24 @@ namespace NodeDialog
 			if (mConnections == null)
 				mConnections = new List<DialogNodeConnection>();
 
+			BaseDialogNode inNode = connection.inNode;
+
 			UnityEditor.Undo.RegisterCompleteObjectUndo(this, "Delete Connection");
+			UnityEditor.Undo.RegisterCompleteObjectUndo(inNode, "Delete Connection");
 			UnityEditor.Undo.DestroyObjectImmediate(connection);
 
+			connection.inNode.outConnections.Remove(connection);
 			mConnections.Remove(connection);
 			OnValidate();
 
 			UnityEditor.EditorUtility.SetDirty(this);
 		}
 
+		/// <summary>
+		/// Finds and validates any data referenced by this object in the above lists
+		/// and ensures that it is properly serialized into the same asset.
+		/// Also automatically called by Unity on Undo/Redo.
+		/// </summary>
 		private void OnValidate()
 		{
 			string path = UnityEditor.AssetDatabase.GetAssetPath(this);
