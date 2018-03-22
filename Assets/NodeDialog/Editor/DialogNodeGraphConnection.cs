@@ -14,10 +14,9 @@ namespace UnityEditor
 
 		public void Draw()
 		{
-			Vector2 pos1 = associatedConnection.inNode.nodePosition;
-			Vector2 pos2 = associatedConnection.outNode.nodePosition;
-
-			Handles.DrawLine(pos1, pos2);
+			Handles.DrawLine(
+				associatedConnection.inNode.rect.center,
+				associatedConnection.outNode.rect.center);
 		}
 	}
 }

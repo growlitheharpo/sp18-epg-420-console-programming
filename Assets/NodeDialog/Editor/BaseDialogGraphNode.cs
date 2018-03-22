@@ -6,13 +6,10 @@ namespace UnityEditor
 {
 	public class BaseDialogGraphNode
 	{
-		private const float WIDTH = 200.0f, HEIGHT = 50.0f;
-
 		private readonly Action<BaseDialogGraphNode> mRemoveNodeCallback;
 		private readonly GUIStyle mMasterStyle;
 		private bool mIsDragged, mIsSelected;
 
-		public Rect rect { get { return new Rect(associatedNode.nodePosition, new Vector2(WIDTH, HEIGHT)); } }
 		public BaseDialogNode associatedNode { get; private set; }
 
 		public BaseDialogGraphNode(BaseDialogNode node, GUIStyle style, Action<BaseDialogGraphNode> removeNodeCallback)
@@ -32,7 +29,7 @@ namespace UnityEditor
 			if (mIsDragged || mIsSelected)
 				styleCopy.normal = mMasterStyle.focused;
 
-			GUI.Box(rect, "Wow" + mIsSelected, styleCopy);
+			GUI.Box(associatedNode.rect, "Wow" + mIsSelected, styleCopy);
 		}
 
 		public bool ProcessEvents(Event e)
@@ -60,9 +57,11 @@ namespace UnityEditor
 
 		private bool HandleEventMouseDown(Event e)
 		{
-			if (e.button == 0) // left click
+			bool insideRect = associatedNode.rect.Contains(e.mousePosition);
+
+			if (e.button == 0)
 			{
-				if (rect.Contains(e.mousePosition))
+				if (insideRect)
 				{
 					Select();
 					return true;
@@ -73,20 +72,31 @@ namespace UnityEditor
 					return true;
 				}
 			}
-			else if (e.button == 1 && rect.Contains(e.mousePosition)) // right click
+			else if (e.button == 1)
 			{
-				ProcessContextMenu();
-				e.Use();
+				if (insideRect)
+				{
+					Select(false);
+
+					ProcessContextMenu();
+					e.Use();
+
+					return true;
+				}
+				else if (mIsSelected)
+				{
+					Deselect();
+					return true;
+				}
 			}
-			
+
 			return false;
 		}
 
-		private void Select()
+		private void Select(bool drag = true)
 		{
-			mIsDragged = true;
+			mIsDragged = drag;
 			mIsSelected = true;
-
 			Selection.SetActiveObjectWithContext(associatedNode, associatedNode);
 		}
 

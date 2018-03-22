@@ -8,6 +8,9 @@ namespace NodeDialog
 	/// </summary>
 	public class BaseDialogNode : ScriptableObject
 	{
+		// These are used in the editor
+		private const float WIDTH = 200.0f, HEIGHT = 50.0f;
+
 		[SerializeField] private Vector2 mNodePosition;
 		[SerializeField] private List<DialogNodeConnection> mOutConnections;
 
@@ -27,6 +30,14 @@ namespace NodeDialog
 		{
 			get { return mOutConnections; }
 			set { mOutConnections = value; }
+		}
+
+		/// <summary>
+		/// The rect of this node (in the editor).
+		/// </summary>
+		public Rect rect
+		{
+			get { return new Rect(mNodePosition, new Vector2(WIDTH, HEIGHT)); }
 		}
 	}
 }
