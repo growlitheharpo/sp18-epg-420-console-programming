@@ -72,22 +72,49 @@ namespace NodeDialog
 			return mConnections ?? (mConnections = new List<DialogNodeConnection>());
 		}
 
-		public void AddNode_Editor(DialogNodeConnection newNode)
+		/// <summary>
+		/// Adds a new connection to the list and returns it, but in a way that allows it to be undone.
+		/// Registers all changes into the UnityEditor.Undo system.
+		/// </summary>
+		/// <param name="node1">The 'in' node of this connection</param>
+		/// <param name="node2">The 'out' node of this connection.</param>
+		/// <returns>The newly created connection</returns>
+		[NotNull] public DialogNodeConnection AddConnection_Editor(BaseDialogNode node1, BaseDialogNode node2)
 		{
 			if (mConnections == null)
 				mConnections = new List<DialogNodeConnection>();
 
-			mConnections.Add(newNode);
+			DialogNodeConnection newConnection = CreateInstance<DialogNodeConnection>();
+			newConnection.inNode = node1;
+			newConnection.outNode = node2;
+
+			UnityEditor.Undo.RegisterCreatedObjectUndo(newConnection, "Create New Connection");
+			UnityEditor.Undo.RecordObject(this, "Create New Connection");
+
+			mConnections.Add(newConnection);
 			OnValidate();
+
+			UnityEditor.EditorUtility.SetDirty(this);
+			return newConnection;
 		}
 
-		public void RemoveNode_Editor(DialogNodeConnection node)
+		/// <summary>
+		/// Removes the given connection from our list, but in a safe way that allows it to be undone.
+		/// Registers all changes into the UnityEditor.Undo system.
+		/// </summary>
+		/// <param name="connection">The connection to remove.</param>
+		public void RemoveConnection_Editor(DialogNodeConnection connection)
 		{
 			if (mConnections == null)
 				mConnections = new List<DialogNodeConnection>();
 
-			mConnections.Remove(node);
+			UnityEditor.Undo.RegisterCompleteObjectUndo(this, "Delete Connection");
+			UnityEditor.Undo.DestroyObjectImmediate(connection);
+
+			mConnections.Remove(connection);
 			OnValidate();
+
+			UnityEditor.EditorUtility.SetDirty(this);
 		}
 
 		private void OnValidate()
