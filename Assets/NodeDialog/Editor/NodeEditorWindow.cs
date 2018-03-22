@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using NodeDialog;
 using UnityEngine;
 
@@ -85,7 +86,7 @@ namespace UnityEditor
 
 			var nodes = mCachedDialogAsset.GetNodes_Editor();
 			foreach (BaseDialogNode n in nodes)
-				mNodes.Add(new BaseDialogGraphNode(n, mNodeStyle, OnRemoveNode));
+				mNodes.Add(new BaseDialogGraphNode(n, mNodeStyle, OnRemoveNode, OnTryAddConnection));
 
 			var conns = mCachedDialogAsset.GetConnections_Editor();
 			foreach (DialogNodeConnection c in conns)
@@ -107,8 +108,8 @@ namespace UnityEditor
 			if (mCachedDialogAsset != kEditingDialog || mCachedDialogAsset.GetNodes_Editor().Count != mNodes.Count)
 				InitializeFromCharacter();
 
-			DrawNodes();
 			DrawConnections();
+			DrawNodes(Event.current.mousePosition);
 
 			ProcessNodeEvents(Event.current);
 			ProcessEvents(Event.current);
@@ -168,13 +169,13 @@ namespace UnityEditor
 		/// <summary>
 		/// Loop through every node and draw each.
 		/// </summary>
-		private void DrawNodes()
+		private void DrawNodes(Vector2 mousePos)
 		{
 			if (mNodes == null)
 				return;
 
 			foreach (BaseDialogGraphNode node in mNodes)
-				node.Draw();
+				node.Draw(mousePos);
 		}
 
 		/// <summary>
@@ -215,6 +216,28 @@ namespace UnityEditor
 		}
 
 		/// <summary>
+		/// Attempt to add a new connection between the provided node and whichever is under the mouse.
+		/// </summary>
+		/// <param name="startNode">The node we are drawing the connection FROM</param>
+		/// <param name="mousePosition">The current mouse position.</param>
+		/// <returns>True if this was successful, otherwise false.</returns>
+		private bool OnTryAddConnection(BaseDialogGraphNode startNode, Vector2 mousePosition)
+		{
+			BaseDialogGraphNode target = mNodes.LastOrDefault(x => x.associatedNode.rect.Contains(mousePosition) && x != startNode);
+
+			Debug.Log("SOURCE: " + startNode + " TARGET: " + target);
+
+			if (target == null)
+				return false;
+
+			// Create a new connection
+			DialogNodeConnection connection = mCachedDialogAsset.AddConnection_Editor(startNode.associatedNode, target.associatedNode);
+			mConnections.Add(new DialogNodeGraphConnection(connection));
+
+			return true;
+		}
+
+		/// <summary>
 		/// Handle the user clicking on "Add node" in the context menu.
 		/// </summary>
 		/// <param name="mousePosition">The position of the mouse when right click was first pressed.</param>
@@ -224,7 +247,7 @@ namespace UnityEditor
 			BaseDialogNode newRealNode = mCachedDialogAsset.AddNode_Editor();
 			newRealNode.nodePosition = mousePosition;
 
-			mNodes.Add(new BaseDialogGraphNode(newRealNode, mNodeStyle, OnRemoveNode));
+			mNodes.Add(new BaseDialogGraphNode(newRealNode, mNodeStyle, OnRemoveNode, OnTryAddConnection));
 		}
 
 		/// <summary>
@@ -236,8 +259,8 @@ namespace UnityEditor
 			// Delete the asset, but allow it to be undone.
 			mCachedDialogAsset.RemoveNode_Editor(n.associatedNode);
 
-			// Remove the graph node from our list.
-			mNodes.Remove(n);
+			// Reinitialize because this might've caused connections to be deleted too.
+			InitializeFromCharacter();
 		}
 	}
 }

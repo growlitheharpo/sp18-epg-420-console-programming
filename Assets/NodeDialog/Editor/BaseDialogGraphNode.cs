@@ -7,20 +7,26 @@ namespace UnityEditor
 	public class BaseDialogGraphNode
 	{
 		private readonly Action<BaseDialogGraphNode> mRemoveNodeCallback;
+		private readonly Func<BaseDialogGraphNode, Vector2, bool> mTryAddConnectionCallback;
 		private readonly GUIStyle mMasterStyle;
-		private bool mIsDragged, mIsSelected;
+
+		private bool mIsDragged, mIsSelected, mInConnectionMode;
 
 		public BaseDialogNode associatedNode { get; private set; }
 
-		public BaseDialogGraphNode(BaseDialogNode node, GUIStyle style, Action<BaseDialogGraphNode> removeNodeCallback)
+		public BaseDialogGraphNode(BaseDialogNode node, GUIStyle style, Action<BaseDialogGraphNode> removeNodeCallback, Func<BaseDialogGraphNode, Vector2, bool> addConnectionCallback)
 		{
 			associatedNode = node;
 			mMasterStyle = style;
 			mRemoveNodeCallback = removeNodeCallback;
+			mTryAddConnectionCallback = addConnectionCallback;
 		}
 
-		public void Draw()
+		public void Draw(Vector2 mousePos)
 		{
+			if (mInConnectionMode)
+				Handles.DrawLine(associatedNode.rect.center, mousePos);
+
 			string nodeName = "NODE" + associatedNode.GetInstanceID();
 			GUI.SetNextControlName(nodeName);
 			
@@ -52,11 +58,24 @@ namespace UnityEditor
 					break;
 			}
 
-			return false;
+			// If we're in connection mode, we want to force a repaint, so return true.
+			return mInConnectionMode;
 		}
 
 		private bool HandleEventMouseDown(Event e)
 		{
+			if (mInConnectionMode)
+			{
+				if (!mTryAddConnectionCallback.Invoke(this, e.mousePosition))
+				{
+					Deselect();
+					e.Use();
+					return true;
+				}
+
+				mInConnectionMode = false;
+			}
+
 			bool insideRect = associatedNode.rect.Contains(e.mousePosition);
 
 			if (e.button == 0)
@@ -118,6 +137,7 @@ namespace UnityEditor
 		{
 			GenericMenu menu = new GenericMenu();
 			menu.AddItem(new GUIContent("Remove Node"), false, OnClickRemoveNode);
+			menu.AddItem(new GUIContent("Add connection"), false, OnClickAddConnection);
 			menu.ShowAsContext();
 		}
 
@@ -129,6 +149,11 @@ namespace UnityEditor
 			if (mRemoveNodeCallback != null)
 				mRemoveNodeCallback.Invoke(this);
 #endif
+		}
+
+		private void OnClickAddConnection()
+		{
+			mInConnectionMode = true;
 		}
 	}
 }

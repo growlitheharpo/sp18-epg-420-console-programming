@@ -53,6 +53,17 @@ namespace NodeDialog
 			if (mNodes == null)
 				mNodes = new List<BaseDialogNode>();
 
+			// Remove all this node's connections
+			for (int i = 0; i < mConnections.Count; ++i)
+			{
+				DialogNodeConnection c = mConnections[i];
+				if (c.inNode != node && c.outNode != node)
+					continue;
+
+				RemoveConnection_Editor(c);
+				--i;
+			}
+			
 			// Delete the asset, but in a way that allows it to be undone.
 			UnityEditor.Undo.RegisterCompleteObjectUndo(this, "Delete Node");
 			UnityEditor.Undo.DestroyObjectImmediate(node);
