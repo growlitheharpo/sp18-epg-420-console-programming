@@ -104,7 +104,7 @@ namespace UnityEditor
 
 			var conns = mCachedDialogAsset.GetConnections_Editor();
 			foreach (DialogNodeConnection c in conns)
-				mConnections.Add(new DialogNodeGraphConnection(c));
+				mConnections.Add(new DialogNodeGraphConnection(c, OnRemoveConnection));
 		}
 
 		/// <summary>
@@ -128,6 +128,8 @@ namespace UnityEditor
 			ProcessConnectionEvents(Event.current);
 			ProcessNodeEvents(Event.current);
 			ProcessEvents(Event.current);
+
+			GUI.changed = true;
 
 			if (GUI.changed)
 				Repaint();
@@ -260,7 +262,7 @@ namespace UnityEditor
 
 			// Create a new connection
 			DialogNodeConnection connection = mCachedDialogAsset.AddConnection_Editor(startNode.associatedNode, target.associatedNode);
-			mConnections.Add(new DialogNodeGraphConnection(connection));
+			mConnections.Add(new DialogNodeGraphConnection(connection, OnRemoveConnection));
 
 			return true;
 		}
@@ -288,6 +290,15 @@ namespace UnityEditor
 			mCachedDialogAsset.RemoveNode_Editor(n.associatedNode);
 
 			// Reinitialize because this might've caused connections to be deleted too.
+			InitializeFromCharacter();
+		}
+
+		private void OnRemoveConnection(DialogNodeGraphConnection connection)
+		{
+			// Delete the asset, but allow it to be undone.
+			mCachedDialogAsset.RemoveConnection_Editor(connection.associatedConnection);
+
+			// Rebuild our graph form the character because this might've caused other effects.
 			InitializeFromCharacter();
 		}
 	}

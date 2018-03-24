@@ -1,4 +1,5 @@
-﻿using NodeDialog;
+﻿using System;
+using NodeDialog;
 using UnityEngine;
 
 namespace UnityEditor
@@ -6,8 +7,11 @@ namespace UnityEditor
 	public class DialogNodeGraphConnection
 	{
 		private const float SELECTION_RADIUS = 5.0f;
-		public static Color selectedColor { get { return new Color(0.42f, 0.7f, 1.0f); } }
-		public static Color standardColor { get { return Color.white; } }
+		private static Color selectedColor { get { return new Color(0.42f, 0.7f, 1.0f); } }
+		private static Color standardColor { get { return Color.white; } }
+
+		private readonly Action<DialogNodeGraphConnection> mOnDeleteConnection;
+		private readonly Texture2D mTriangleTexture;
 
 		private Vector2 lineStart { get { return associatedConnection.inNode.rect.center; } }
 		private Vector2 lineEnd { get { return associatedConnection.outNode.rect.center; } }
@@ -15,9 +19,21 @@ namespace UnityEditor
 
 		public DialogNodeConnection associatedConnection { get; private set; }
 
-		public DialogNodeGraphConnection(DialogNodeConnection connection)
+		public DialogNodeGraphConnection(DialogNodeConnection connection, /*GUIStyle s, */Action<DialogNodeGraphConnection> onDeleteConnection)
 		{
 			associatedConnection = connection;
+			mOnDeleteConnection = onDeleteConnection;
+			if (mTriangleTexture != null)
+				return;
+
+			// Setup the triangle texture if no one has yet
+			//mTriangleTexture = EditorGUIUtility.IconContent("AnimatorStateTransition Icon").image as Texture2D;
+			mTriangleTexture = UnityEditor.Graphs.Styles.varPinIn.normal.background as Texture2D;
+
+			/*var pixels = baseTexture.ReadPixels();
+			for (int i = 0; i < pixels.Length; ++i)
+				pixels[i] = new Color(1.0f, 1.0f, 1.0f, pixels[i].a);
+			mTriangleTexture.SetPixels(pixels);*/
 		}
 
 		/// <summary>
@@ -38,6 +54,10 @@ namespace UnityEditor
 			{
 				case EventType.MouseDown:
 					return HandleEventMouseDown(e);
+				case EventType.KeyDown:
+					if (e.keyCode == KeyCode.Delete && isSelected)
+						DeleteConnection();
+					break;
 			}
 			return false;
 		}
@@ -66,6 +86,19 @@ namespace UnityEditor
 		}
 
 		/// <summary>
+		/// Handle the delete key being pressed while this connection is active.
+		/// </summary>
+		private void DeleteConnection()
+		{
+#if NET_4_6
+			mOnDeleteConnection?.Invoke(this);
+#else
+			if (mOnDeleteConnection != null)
+				mOnDeleteConnection.Invoke(this);
+#endif
+		}
+
+		/// <summary>
 		/// Return the distance between three 2D points. Requires a little bit of 3D math.
 		/// </summary>
 		private float LinePointDistance(Vector2 a, Vector2 b, Vector2 p)
@@ -83,8 +116,8 @@ namespace UnityEditor
 		/// </summary>
 		/// <param name="a">The start position of the line.</param>
 		/// <param name="b">The end position of the line.</param>
-		/// <param name="c"></param>
-		/// <param name="width"></param>
+		/// <param name="c">The color of the line.</param>
+		/// <param name="width">The width of the line.</param>
 		public static void DrawLine(Vector2 a, Vector2 b, Color? c = null, float width = 3.0f)
 		{
 			if (c == null)
