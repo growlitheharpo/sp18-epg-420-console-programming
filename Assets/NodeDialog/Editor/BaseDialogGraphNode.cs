@@ -10,9 +10,10 @@ namespace UnityEditor
 		private readonly Func<BaseDialogGraphNode, Vector2, bool> mTryAddConnectionCallback;
 		private readonly GUIStyle mMasterStyle;
 
-		private bool mIsDragged, mIsSelected, mInConnectionMode;
+		private bool mIsDragged, mInConnectionMode;
 
 		public BaseDialogNode associatedNode { get; private set; }
+		private bool isSelected { get { return Selection.activeObject == associatedNode; } }
 
 		public BaseDialogGraphNode(BaseDialogNode node, GUIStyle style, Action<BaseDialogGraphNode> removeNodeCallback, Func<BaseDialogGraphNode, Vector2, bool> addConnectionCallback)
 		{
@@ -25,17 +26,17 @@ namespace UnityEditor
 		public void Draw(Vector2 mousePos)
 		{
 			if (mInConnectionMode)
-				Handles.DrawLine(associatedNode.rect.center, mousePos);
+				DialogNodeGraphConnection.DrawLine(associatedNode.rect.center, mousePos);
 
 			string nodeName = "NODE" + associatedNode.GetInstanceID();
 			GUI.SetNextControlName(nodeName);
 			
 			// TODO: Why doesn't focusing work anymore?
 			GUIStyle styleCopy = new GUIStyle(mMasterStyle);
-			if (mIsDragged || mIsSelected)
+			if (Selection.activeObject == associatedNode)
 				styleCopy.normal = mMasterStyle.focused;
 
-			GUI.Box(associatedNode.rect, "Wow" + mIsSelected, styleCopy);
+			GUI.Box(associatedNode.rect, nodeName + isSelected, styleCopy);
 		}
 
 		public bool ProcessEvents(Event e)
@@ -85,7 +86,7 @@ namespace UnityEditor
 					Select();
 					return true;
 				}
-				else if (mIsSelected)
+				else if (isSelected)
 				{
 					Deselect();
 					return true;
@@ -102,7 +103,7 @@ namespace UnityEditor
 
 					return true;
 				}
-				else if (mIsSelected)
+				else if (isSelected)
 				{
 					Deselect();
 					return true;
@@ -115,13 +116,11 @@ namespace UnityEditor
 		private void Select(bool drag = true)
 		{
 			mIsDragged = drag;
-			mIsSelected = true;
 			Selection.SetActiveObjectWithContext(associatedNode, associatedNode);
 		}
 
 		private void Deselect()
 		{
-			mIsSelected = false;
 			mIsDragged = false;
 
 			if (Selection.activeObject == associatedNode)
