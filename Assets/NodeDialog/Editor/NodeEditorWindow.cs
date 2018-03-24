@@ -123,6 +123,7 @@ namespace UnityEditor
 			DrawConnections();
 			DrawNodes(Event.current.mousePosition);
 
+			ProcessConnectionEvents(Event.current);
 			ProcessNodeEvents(Event.current);
 			ProcessEvents(Event.current);
 
@@ -188,6 +189,19 @@ namespace UnityEditor
 
 			foreach (BaseDialogGraphNode node in mNodes)
 				node.Draw(mousePos);
+		}
+
+		/// <summary>
+		/// Loop backwards through all of the connections and allow them to provess their events.
+		/// NOTE: We go backwards because the ones at the end are drawn last (i.e., on top)
+		/// </summary>
+		private void ProcessConnectionEvents(Event current)
+		{
+			if (mConnections == null)
+				return;
+
+			for (int i = mConnections.Count - 1; i >= 0; --i)
+				GUI.changed = mConnections[i].ProcessEvents(current) || GUI.changed;
 		}
 
 		/// <summary>
