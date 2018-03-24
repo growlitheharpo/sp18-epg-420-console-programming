@@ -50,6 +50,7 @@ namespace UnityEditor
 			InitializeFromCharacter();
 
 			Undo.undoRedoPerformed += OnUndoRedoPerformed;
+			Selection.selectionChanged += OnSelectionChanged;
 		}
 
 		/// <summary>
@@ -58,6 +59,7 @@ namespace UnityEditor
 		private void OnDisable()
 		{
 			Undo.undoRedoPerformed -= OnUndoRedoPerformed;
+			Selection.selectionChanged -= OnSelectionChanged;
 		}
 
 		/// <summary>
@@ -69,6 +71,16 @@ namespace UnityEditor
 		{
 			GUI.changed = true;
 			InitializeFromCharacter();
+			Repaint();
+		}
+
+		/// <summary>
+		/// Handle Unity notifiying us of an undo or redo.
+		/// Force a repaint.
+		/// </summary>
+		private void OnSelectionChanged()
+		{
+			GUI.changed = true;
 			Repaint();
 		}
 
