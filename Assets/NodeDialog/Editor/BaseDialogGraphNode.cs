@@ -57,6 +57,10 @@ namespace UnityEditor
 					}
 
 					break;
+				case EventType.KeyDown: // check for the delete key being pressed
+					if (e.keyCode == KeyCode.Delete && isSelected)
+						OnClickRemoveNode();
+					break;
 			}
 
 			// If we're in connection mode, we want to force a repaint, so return true.

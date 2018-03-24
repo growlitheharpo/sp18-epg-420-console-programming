@@ -43,6 +43,7 @@ namespace UnityEditor
 		{
 			Color c = isSelected ? selectedColor : standardColor;
 			DrawLine(lineStart, lineEnd, c);
+			DrawArrow(lineStart, lineEnd, c);
 		}
 
 		/// <summary>
@@ -126,7 +127,57 @@ namespace UnityEditor
 			Vector2 dir = b - a;
 			Vector2 t1 = a - dir, t2 = b + dir;
 
-			Handles.DrawBezier(a, b, t2, t1, (Color)c, Texture2D.whiteTexture, width);
+			//Handles.DrawBezier(a, b, t2, t1, (Color)c, Texture2D.whiteTexture, width);
+		}
+
+		/// <summary>
+		/// Draw the arrow in the center of the line.
+		/// </summary>
+		/// <param name="a">The start position of the line.</param>
+		/// <param name="b">The end position of the line.</param>
+		/// <param name="color">The color of the line.</param>
+		private void DrawArrow(Vector2 a, Vector2 b, Color color)
+		{
+			Matrix4x4 push = GUI.matrix;
+			Vector2 center = (b - a) * 0.5f + a;
+
+			/*Rect r = new Rect(center, new Vector2(5.0f, (a - b).magnitude));
+			r.center -= Vector2.one * r.width / 2.0f;*/
+
+			Rect r = new Rect();
+			r.width = Mathf.Max(Mathf.Abs(a.x - b.x), 5.0f);
+			r.height = Mathf.Max(Mathf.Abs(a.y - b.y), 5.0f);
+			r.x = Mathf.Min(a.x, b.x);
+			r.y = Mathf.Min(a.y, b.y);
+			/*if (a.sqrMagnitude < b.sqrMagnitude)
+			{
+				r.min = a;
+				r.max = b;
+			}
+			else
+			{
+				r.min = b;
+				r.max = a;
+			}*/
+
+			float angle = Vector2.SignedAngle(Vector2.up, b - a);// + 90.0f;
+
+			//GUIUtility.RotateAroundPivot(angle, center);
+			//Vector4 borders = new Vector4(5.0f, 5.0f, 5.0f, 5.0f);
+			Vector4 borders = new Vector4(0.2f, 0.0f, 0.0f, 0.0f);
+			//GUI.DrawTextureWithTexCoords(r, mTriangleTexture, new Rect(0.0f, 0.3f, 1.0f, 0.4f), true);
+			//GUI.DrawTexture(r, mTriangleTexture, ScaleMode.StretchToFill, true, 0.0f, Color.white, borders, Vector4.zero);
+			//GUI.DrawTexture(r, mTriangleTexture, ScaleMode.StretchToFill, true, 0.0f, Color.white, );
+			/*GUI.color = Color.cyan;
+			GUIStyle s = "AnimationEventTooltipArrow";
+			GUI.Label(r, "", s);*/
+			GUIStyle s = new GUIStyle();
+			s.normal.background = mTriangleTexture;
+			s.border.bottom = 10;
+			s.border.top = 10;
+			GUI.Box(r, " ", s);
+
+			GUI.matrix = push;
 		}
 	}
 }
