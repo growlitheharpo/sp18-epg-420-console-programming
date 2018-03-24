@@ -60,6 +60,8 @@ namespace UnityEditor
 		{
 			Undo.undoRedoPerformed -= OnUndoRedoPerformed;
 			Selection.selectionChanged -= OnSelectionChanged;
+
+			AssetDatabase.SaveAssets();
 		}
 
 		/// <summary>

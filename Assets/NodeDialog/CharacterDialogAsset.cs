@@ -161,9 +161,6 @@ namespace NodeDialog
 				UnityEditor.AssetDatabase.AddObjectToAsset(conn, this);
 				conn.hideFlags = HideFlags.HideInHierarchy;
 			}
-
-			UnityEditor.AssetDatabase.SaveAssets();
-			UnityEditor.AssetDatabase.Refresh();
 		}
 	}
 
