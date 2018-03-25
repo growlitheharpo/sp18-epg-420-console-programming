@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NodeDialog;
 using UnityEngine;
@@ -19,7 +20,6 @@ namespace UnityEditor
 		private CharacterDialogAsset mCachedDialogAsset;
 		private List<BaseDialogGraphNode> mNodes;
 		private List<DialogNodeGraphConnection> mConnections;
-		private GUIStyle mNodeStyle;
 		private Vector2 mDrag;
 
 		/// <summary>
@@ -28,22 +28,6 @@ namespace UnityEditor
 		private void OnEnable()
 		{
 			mDrag = Vector2.zero;
-			mNodeStyle = new GUIStyle
-			{
-				border = new RectOffset(25, 25, 7, 7),
-				normal =
-				{
-					background = EditorGUIUtility.IconContent("node0 hex").image as Texture2D,
-					textColor = GUI.skin.box.normal.textColor
-				},
-				focused =
-				{
-					background = EditorGUIUtility.IconContent("node0 hex on").image as Texture2D,
-					textColor = Color.white,
-				},
-				alignment = TextAnchor.MiddleCenter,
-			};
-
 			mNodes = new List<BaseDialogGraphNode>();
 			mConnections = new List<DialogNodeGraphConnection>();
 			
@@ -100,11 +84,35 @@ namespace UnityEditor
 
 			var nodes = mCachedDialogAsset.GetNodes_Editor();
 			foreach (BaseDialogNode n in nodes)
-				mNodes.Add(new BaseDialogGraphNode(n, mNodeStyle, OnRemoveNode, OnTryAddConnection));
+				mNodes.Add(new BaseDialogGraphNode(n, GenerateNodeStyle(n.GetType()), OnRemoveNode, OnTryAddConnection));
 
 			var conns = mCachedDialogAsset.GetConnections_Editor();
 			foreach (DialogNodeConnection c in conns)
 				mConnections.Add(new DialogNodeGraphConnection(c, OnRemoveConnection));
+		}
+
+		private GUIStyle GenerateNodeStyle(Type n)
+		{
+			BaseNodeVisualAttribute a = (BaseNodeVisualAttribute)Attribute.GetCustomAttribute(n, typeof(BaseNodeVisualAttribute));
+
+			string normal = a == null ? BaseNodeVisualAttribute.DEFAULT_NORMAL_IMAGE : a.normalImage;
+			string selected = a == null ? BaseNodeVisualAttribute.DEFAULT_SELECTED_IMAGE : a.selectedImage;
+
+			return new GUIStyle
+			{
+				border = new RectOffset(25, 25, 7, 7),
+				normal =
+				{
+					background = EditorGUIUtility.IconContent(normal).image as Texture2D,
+					textColor = GUI.skin.box.normal.textColor
+				},
+				focused =
+				{
+					background = EditorGUIUtility.IconContent(selected).image as Texture2D,
+					textColor = Color.white,
+				},
+				alignment = TextAnchor.MiddleCenter,
+			};
 		}
 
 		/// <summary>
@@ -277,7 +285,7 @@ namespace UnityEditor
 			BaseDialogNode newRealNode = mCachedDialogAsset.AddNode_Editor();
 			newRealNode.nodePosition = mousePosition;
 
-			mNodes.Add(new BaseDialogGraphNode(newRealNode, mNodeStyle, OnRemoveNode, OnTryAddConnection));
+			mNodes.Add(new BaseDialogGraphNode(newRealNode, GenerateNodeStyle(newRealNode.GetType()), OnRemoveNode, OnTryAddConnection));
 		}
 
 		/// <summary>

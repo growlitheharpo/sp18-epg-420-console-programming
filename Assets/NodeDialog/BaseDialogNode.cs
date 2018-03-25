@@ -6,6 +6,7 @@ namespace NodeDialog
 	/// <summary>
 	/// The base type that will represent the different nodes in the system.
 	/// </summary>
+	[BaseNodeVisual("node0", "node0 on")]
 	public class BaseDialogNode : ScriptableObject
 	{
 		// These are used in the editor
