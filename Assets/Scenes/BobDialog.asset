@@ -12,10 +12,18 @@ MonoBehaviour:
   m_Name: BobDialog
   m_EditorClassIdentifier: 
   mNodes:
-  - {fileID: 114544048553360388}
-  - {fileID: 114487276523903562}
-  - {fileID: 114417238831696788}
---- !u!114 &114417238831696788
+  - {fileID: 114440135802809968}
+  - {fileID: 114589506005327482}
+  - {fileID: 114704065200741728}
+  - {fileID: 114755024280030460}
+  - {fileID: 114062077231459050}
+  mConnections:
+  - {fileID: 114703931231539638}
+  - {fileID: 114490934080249454}
+  - {fileID: 114139822262005908}
+  - {fileID: 114211280853496766}
+  - {fileID: 114598867895406012}
+--- !u!114 &114062077231459050
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -23,12 +31,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3a3cb4a81a5f0b4e93b705b801facae, type: 3}
+  m_Script: {fileID: 11500000, guid: ded7a529e447f4c42b1ede86c9476a18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mNodePosition: {x: 564, y: 381}
+  mNodePosition: {x: 319, y: 464}
   mOutConnections: []
---- !u!114 &114487276523903562
+  mStatement: Farewell.
+--- !u!114 &114139822262005908
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -36,12 +45,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3a3cb4a81a5f0b4e93b705b801facae, type: 3}
+  m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mNodePosition: {x: 560, y: 331}
-  mOutConnections: []
---- !u!114 &114544048553360388
+  mInNode: {fileID: 114589506005327482}
+  mOutNode: {fileID: 114755024280030460}
+  mConnectionText: I choose the second option!
+--- !u!114 &114211280853496766
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -49,8 +59,112 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3a3cb4a81a5f0b4e93b705b801facae, type: 3}
+  m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mNodePosition: {x: 294, y: 77}
-  mOutConnections: []
+  mInNode: {fileID: 114755024280030460}
+  mOutNode: {fileID: 114062077231459050}
+  mConnectionText: 
+--- !u!114 &114440135802809968
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ded7a529e447f4c42b1ede86c9476a18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mNodePosition: {x: 304, y: 96}
+  mOutConnections:
+  - {fileID: 114703931231539638}
+  mStatement: Greetings!
+--- !u!114 &114490934080249454
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mInNode: {fileID: 114589506005327482}
+  mOutNode: {fileID: 114704065200741728}
+  mConnectionText: I choose the first option!
+--- !u!114 &114589506005327482
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aac22b96e88bc094fb0e3f5d2271b89d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mNodePosition: {x: 308, y: 214}
+  mOutConnections:
+  - {fileID: 114490934080249454}
+  - {fileID: 114139822262005908}
+  mPrompt: Make a choice!
+--- !u!114 &114598867895406012
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mInNode: {fileID: 114704065200741728}
+  mOutNode: {fileID: 114062077231459050}
+  mConnectionText: 
+--- !u!114 &114703931231539638
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mInNode: {fileID: 114440135802809968}
+  mOutNode: {fileID: 114589506005327482}
+  mConnectionText: 
+--- !u!114 &114704065200741728
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ded7a529e447f4c42b1ede86c9476a18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mNodePosition: {x: 165, y: 329}
+  mOutConnections:
+  - {fileID: 114598867895406012}
+  mStatement: Sorry, the first option was wrong.
+--- !u!114 &114755024280030460
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ded7a529e447f4c42b1ede86c9476a18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mNodePosition: {x: 478, y: 341}
+  mOutConnections:
+  - {fileID: 114211280853496766}
+  mStatement: Well done. The second option was correct.
