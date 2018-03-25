@@ -26,12 +26,12 @@ namespace NodeDialog
 		/// Registers all changes into the UnityEditor.Undo system.
 		/// </summary>
 		/// <returns>The newly created node.</returns>
-		[NotNull] public BaseDialogNode AddNode_Editor()
+		[NotNull] public BaseDialogNode AddNode_Editor<T>() where T : BaseDialogNode
 		{
 			if (mNodes == null)
 				mNodes = new List<BaseDialogNode>();
 
-			BaseDialogNode newNode = CreateInstance<BaseDialogNode>();
+			BaseDialogNode newNode = CreateInstance<T>();
 
 			UnityEditor.Undo.RegisterCreatedObjectUndo(newNode, "Create New Node");
 			UnityEditor.Undo.RecordObject(this, "Create New Node");

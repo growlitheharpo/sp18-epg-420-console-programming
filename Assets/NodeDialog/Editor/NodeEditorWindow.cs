@@ -249,7 +249,8 @@ namespace UnityEditor
 		private void ProcessContextMenu(Vector2 mousePosition)
 		{
 			GenericMenu rightClickMenu = new GenericMenu();
-			rightClickMenu.AddItem(new GUIContent("Add node"), false, () => OnClickAddNode(mousePosition));
+			rightClickMenu.AddItem(new GUIContent("Add statement node"), false, () => OnClickAddStatementNode(mousePosition));
+			rightClickMenu.AddItem(new GUIContent("Add choice node"), false, () => OnClickAddChoiceNode(mousePosition));
 			rightClickMenu.ShowAsContext();
 		}
 
@@ -279,10 +280,23 @@ namespace UnityEditor
 		/// Handle the user clicking on "Add node" in the context menu.
 		/// </summary>
 		/// <param name="mousePosition">The position of the mouse when right click was first pressed.</param>
-		private void OnClickAddNode(Vector2 mousePosition)
+		private void OnClickAddStatementNode(Vector2 mousePosition)
 		{
 			// Create a new asset, but allow it to be undone.
-			BaseDialogNode newRealNode = mCachedDialogAsset.AddNode_Editor();
+			BaseDialogNode newRealNode = mCachedDialogAsset.AddNode_Editor<StatementDialogNode>();
+			newRealNode.nodePosition = mousePosition;
+
+			mNodes.Add(new BaseDialogGraphNode(newRealNode, GenerateNodeStyle(newRealNode.GetType()), OnRemoveNode, OnTryAddConnection));
+		}
+
+		/// <summary>
+		/// Handle the user clicking on "Add node" in the context menu.
+		/// </summary>
+		/// <param name="mousePosition">The position of the mouse when right click was first pressed.</param>
+		private void OnClickAddChoiceNode(Vector2 mousePosition)
+		{
+			// Create a new asset, but allow it to be undone.
+			BaseDialogNode newRealNode = mCachedDialogAsset.AddNode_Editor<ChoiceDialogNode>();
 			newRealNode.nodePosition = mousePosition;
 
 			mNodes.Add(new BaseDialogGraphNode(newRealNode, GenerateNodeStyle(newRealNode.GetType()), OnRemoveNode, OnTryAddConnection));
