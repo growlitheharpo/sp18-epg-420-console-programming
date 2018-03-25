@@ -104,7 +104,7 @@ namespace UnityEditor
 				normal =
 				{
 					background = EditorGUIUtility.IconContent(normal).image as Texture2D,
-					textColor = GUI.skin.box.normal.textColor
+					textColor = Color.black
 				},
 				focused =
 				{
