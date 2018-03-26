@@ -1,5 +1,4 @@
 ﻿using System;
-using NodeDialog;
 using NodeDialog.Graph;
 using UnityEditor;
 using UnityEngine;
@@ -12,16 +11,16 @@ namespace NodeDialog.Editor.Graph
 	public class NodeGraphWindowBaseConnection
 	{
 		private const float SELECTION_RADIUS = 5.0f;
-		private static Color selectedColor { get { return new Color(0.42f, 0.7f, 1.0f); } }
-		private static Color standardColor { get { return Color.white; } }
 
 		private readonly Action<NodeGraphWindowBaseConnection> mOnDeleteConnection;
+		private static Color selectedColor { get { return new Color(0.42f, 0.7f, 1.0f); } }
+		private static Color standardColor { get { return Color.white; } }
 
 		/// <summary>
 		/// The start position of this connection.
 		/// </summary>
 		private Vector2 lineStart { get { return associatedConnection.inNode.rectWithDrag.center; } }
-		
+
 		/// <summary>
 		/// The end position of this connection.
 		/// </summary>
@@ -71,6 +70,7 @@ namespace NodeDialog.Editor.Graph
 						DeleteConnection();
 					break;
 			}
+
 			return false;
 		}
 

@@ -10,9 +10,9 @@ namespace NodeDialog.Editor.Graph
 	/// </summary>
 	public class NodeGraphWindowBaseNode
 	{
+		private readonly GUIStyle mMasterStyle;
 		private readonly Action<NodeGraphWindowBaseNode> mRemoveNodeCallback;
 		private readonly Func<NodeGraphWindowBaseNode, Vector2, bool> mTryAddConnectionCallback;
-		private readonly GUIStyle mMasterStyle;
 
 		private bool mIsDragged, mInConnectionMode;
 
@@ -33,7 +33,9 @@ namespace NodeDialog.Editor.Graph
 		/// <param name="style">The GUIStyle for this node.</param>
 		/// <param name="removeNodeCallback">The callback for when this node needs to be deleted.</param>
 		/// <param name="addConnectionCallback">The callback for when this node wants to add a new connection.</param>
-		public NodeGraphWindowBaseNode(BaseNode node, GUIStyle style, Action<NodeGraphWindowBaseNode> removeNodeCallback, Func<NodeGraphWindowBaseNode, Vector2, bool> addConnectionCallback)
+		public NodeGraphWindowBaseNode(
+			BaseNode node, GUIStyle style, Action<NodeGraphWindowBaseNode> removeNodeCallback,
+			Func<NodeGraphWindowBaseNode, Vector2, bool> addConnectionCallback)
 		{
 			associatedNode = node;
 			mMasterStyle = style;
@@ -50,12 +52,12 @@ namespace NodeDialog.Editor.Graph
 				NodeGraphWindowBaseConnection.DrawLine(associatedNode.rect.center, Event.current.mousePosition);
 
 			GUI.SetNextControlName(associatedNode.GetInstanceID().ToString());
-			
+
 			// TODO: Why doesn't focusing work anymore?
 			GUIStyle styleCopy = new GUIStyle(mMasterStyle);
 			if (Selection.activeObject == associatedNode)
 				styleCopy.normal = mMasterStyle.focused;
-			
+
 			GUI.Box(associatedNode.rectWithDrag, associatedNode.name, styleCopy);
 		}
 

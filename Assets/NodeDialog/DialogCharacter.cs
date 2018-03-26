@@ -6,13 +6,13 @@ namespace NodeDialog
 	/// ! SAMPLE CLASS !
 	/// A character that speaks through the dialog system by referencing a dialog asset.
 	/// </summary>
-    public class DialogCharacter : MonoBehaviour
-    {
-	    [SerializeField] private CharacterDialogAsset mDialogAsset;
+	public class DialogCharacter : MonoBehaviour
+	{
+		[SerializeField] private CharacterDialogAsset mDialogAsset;
 
 		/// <summary>
 		/// The dialog asset attached to this character.
 		/// </summary>
-		public CharacterDialogAsset dialogAsset {get { return mDialogAsset; }}
-    }
+		public CharacterDialogAsset dialogAsset { get { return mDialogAsset; } }
+	}
 }

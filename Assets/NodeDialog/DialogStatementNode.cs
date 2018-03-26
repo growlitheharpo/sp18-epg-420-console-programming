@@ -13,7 +13,7 @@ namespace NodeDialog
 		/// <summary>
 		/// The line of dialog (or a token for localization) that this character will say.
 		/// </summary>
-		[Tooltip("The line of dialog (or a token for localization) that this character will say.")]
-		[SerializeField] private string mStatement;
+		[Tooltip("The line of dialog (or a token for localization) that this character will say.")] [SerializeField]
+		private string mStatement;
 	}
 }

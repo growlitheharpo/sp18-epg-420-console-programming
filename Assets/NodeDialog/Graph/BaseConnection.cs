@@ -7,9 +7,9 @@ namespace NodeDialog.Graph
 	/// </summary>
 	public class BaseConnection : ScriptableObject
 	{
+		[SerializeField] private string mConnectionText;
 		[SerializeField] private BaseNode mInNode;
 		[SerializeField] private BaseNode mOutNode;
-		[SerializeField] private string mConnectionText;
 
 		/// <summary>
 		/// The "in" node that starts this connection.

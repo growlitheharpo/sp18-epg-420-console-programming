@@ -14,8 +14,8 @@ namespace NodeDialog
 	[CreateAssetMenu(fileName = "DialogAsset", menuName = "Node Dialog/Dialog Asset File")]
 	public class CharacterDialogAsset : ScriptableObject
 	{
-		[SerializeField] private List<BaseNode> mNodes;
 		[SerializeField] private List<BaseConnection> mConnections;
+		[SerializeField] private List<BaseNode> mNodes;
 
 		/// <summary>
 		/// A read-only copy of this asset's dialog nodes. Can be traversed in-game.
@@ -32,7 +32,8 @@ namespace NodeDialog
 		/// <summary>
 		/// Returns this asset's list of nodes.
 		/// </summary>
-		[NotNull] public List<BaseNode> GetNodes_Editor()
+		[NotNull]
+		public List<BaseNode> GetNodes_Editor()
 		{
 			return mNodes ?? (mNodes = new List<BaseNode>());
 		}
@@ -42,7 +43,8 @@ namespace NodeDialog
 		/// Registers all changes into the UnityEditor.Undo system.
 		/// </summary>
 		/// <returns>The newly created node.</returns>
-		[NotNull] public BaseNode AddNode_Editor<T>() where T : BaseNode
+		[NotNull]
+		public BaseNode AddNode_Editor<T>() where T : BaseNode
 		{
 			if (mNodes == null)
 				mNodes = new List<BaseNode>();
@@ -79,7 +81,7 @@ namespace NodeDialog
 				RemoveConnection_Editor(c);
 				--i;
 			}
-			
+
 			// Delete the asset, but in a way that allows it to be undone.
 			UnityEditor.Undo.RegisterCompleteObjectUndo(this, "Delete Node");
 			UnityEditor.Undo.DestroyObjectImmediate(node);
@@ -94,7 +96,8 @@ namespace NodeDialog
 		/// <summary>
 		/// Returns this asset's list of connections.
 		/// </summary>
-		[NotNull] public List<BaseConnection> GetConnections_Editor()
+		[NotNull]
+		public List<BaseConnection> GetConnections_Editor()
 		{
 			return mConnections ?? (mConnections = new List<BaseConnection>());
 		}
@@ -106,7 +109,8 @@ namespace NodeDialog
 		/// <param name="node1">The 'in' node of this connection</param>
 		/// <param name="node2">The 'out' node of this connection.</param>
 		/// <returns>The newly created connection</returns>
-		[NotNull] public BaseConnection AddConnection_Editor(BaseNode node1, BaseNode node2)
+		[NotNull]
+		public BaseConnection AddConnection_Editor(BaseNode node1, BaseNode node2)
 		{
 			if (mConnections == null)
 				mConnections = new List<BaseConnection>();

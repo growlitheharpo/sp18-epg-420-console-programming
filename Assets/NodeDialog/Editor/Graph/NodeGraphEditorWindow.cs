@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NodeDialog;
 using NodeDialog.Graph;
 using UnityEditor;
 using UnityEngine;
@@ -15,6 +14,10 @@ namespace NodeDialog.Editor.Graph
 	{
 		private static CharacterDialogAsset kEditingDialog;
 
+		private CharacterDialogAsset mCachedDialogAsset;
+		private List<NodeGraphWindowBaseConnection> mConnections;
+		private List<NodeGraphWindowBaseNode> mNodes;
+
 		/// <summary>
 		/// Create a new window for the provided character.
 		/// </summary>
@@ -25,10 +28,6 @@ namespace NodeDialog.Editor.Graph
 			window.titleContent = new GUIContent("Node Dialog Editor");
 		}
 
-		private CharacterDialogAsset mCachedDialogAsset;
-		private List<NodeGraphWindowBaseNode> mNodes;
-		private List<NodeGraphWindowBaseConnection> mConnections;
-
 		/// <summary>
 		/// Setup all of the styles that we're going to use.
 		/// </summary>
@@ -36,7 +35,7 @@ namespace NodeDialog.Editor.Graph
 		{
 			mNodes = new List<NodeGraphWindowBaseNode>();
 			mConnections = new List<NodeGraphWindowBaseConnection>();
-			
+
 			InitializeFromCharacter();
 
 			Undo.undoRedoPerformed += OnUndoRedoPerformed;
@@ -133,7 +132,7 @@ namespace NodeDialog.Editor.Graph
 			DrawBackground();
 			DrawGrid(12.0f, Color.white * 0.420f);
 			DrawGrid(120.0f, Color.white * 0.29f);
-			
+
 			if (mCachedDialogAsset == null)
 				return;
 
@@ -196,7 +195,7 @@ namespace NodeDialog.Editor.Graph
 		{
 			if (mConnections == null)
 				return;
-			
+
 			foreach (NodeGraphWindowBaseConnection c in mConnections)
 				c.Draw();
 		}

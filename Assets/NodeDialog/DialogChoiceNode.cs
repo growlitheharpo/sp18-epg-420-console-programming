@@ -13,7 +13,7 @@ namespace NodeDialog
 		/// <summary>
 		/// The line of dialog (or a token for localization) that this character will say to prompt the player.
 		/// </summary>
-		[Tooltip("The line of dialog (or a token for localization) that this character will say to prompt the player.")]
-		[SerializeField] private string mPrompt;
+		[Tooltip("The line of dialog (or a token for localization) that this character will say to prompt the player.")] [SerializeField]
+		private string mPrompt;
 	}
 }
