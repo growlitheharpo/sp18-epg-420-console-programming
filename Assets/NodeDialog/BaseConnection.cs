@@ -1,20 +1,20 @@
 ﻿using UnityEngine;
 
-namespace NodeDialog
+namespace NodeDialog.Graph
 {
 	/// <summary>
 	/// A serializable connection between two nodes.
 	/// </summary>
-	public class DialogNodeConnection : ScriptableObject
+	public class BaseConnection : ScriptableObject
 	{
-		[SerializeField] private BaseDialogNode mInNode;
-		[SerializeField] private BaseDialogNode mOutNode;
+		[SerializeField] private BaseNode mInNode;
+		[SerializeField] private BaseNode mOutNode;
 		[SerializeField] private string mConnectionText;
 
 		/// <summary>
 		/// The "in" node that starts this connection.
 		/// </summary>
-		public BaseDialogNode inNode
+		public BaseNode inNode
 		{
 			get { return mInNode; }
 			set { mInNode = value; }
@@ -23,7 +23,7 @@ namespace NodeDialog
 		/// <summary>
 		/// The "out" node that this connection leads to.
 		/// </summary>
-		public BaseDialogNode outNode
+		public BaseNode outNode
 		{
 			get { return mOutNode; }
 			set { mOutNode = value; }

@@ -1,9 +1,13 @@
 ﻿using System;
 using NodeDialog;
+using NodeDialog.Graph;
 using UnityEngine;
 
 namespace UnityEditor
 {
+	/// <summary>
+	/// Representation of a BaseConnection on the Node Graph Editor
+	/// </summary>
 	public class DialogNodeGraphConnection
 	{
 		private const float SELECTION_RADIUS = 5.0f;
@@ -12,13 +16,32 @@ namespace UnityEditor
 
 		private readonly Action<DialogNodeGraphConnection> mOnDeleteConnection;
 
+		/// <summary>
+		/// The start position of this connection.
+		/// </summary>
 		private Vector2 lineStart { get { return associatedConnection.inNode.rect.center; } }
+		
+		/// <summary>
+		/// The end position of this connection.
+		/// </summary>
 		private Vector2 lineEnd { get { return associatedConnection.outNode.rect.center; } }
+
+		/// <summary>
+		/// Is our connection selected in the Unity editor?
+		/// </summary>
 		private bool isSelected { get { return Selection.activeObject == associatedConnection; } }
 
-		public DialogNodeConnection associatedConnection { get; private set; }
+		/// <summary>
+		/// The actual connection asset associated with this graph node.
+		/// </summary>
+		public BaseConnection associatedConnection { get; private set; }
 
-		public DialogNodeGraphConnection(DialogNodeConnection connection, /*GUIStyle s, */Action<DialogNodeGraphConnection> onDeleteConnection)
+		/// <summary>
+		/// Representation of a BaseConnection on the Node Graph Editor
+		/// </summary>
+		/// <param name="connection">The actual connection asset that this graph connection will be associated with.</param>
+		/// <param name="onDeleteConnection">The callback for when this node wants to add a new connection.</param>
+		public DialogNodeGraphConnection(BaseConnection connection, Action<DialogNodeGraphConnection> onDeleteConnection)
 		{
 			associatedConnection = connection;
 			mOnDeleteConnection = onDeleteConnection;

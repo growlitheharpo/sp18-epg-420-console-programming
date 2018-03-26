@@ -1,24 +1,40 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using JetBrains.Annotations;
+using NodeDialog.Graph;
 using UnityEngine;
 
 namespace NodeDialog
 {
+	/// <summary>
+	/// A dialog asset. Holds the necessary information to construct a directed dialog graph
+	/// and traverse it at runtime.
+	/// </summary>
 	[CreateAssetMenu(fileName = "DialogAsset", menuName = "Node Dialog/Dialog Asset File")]
 	public class CharacterDialogAsset : ScriptableObject
 	{
-		[SerializeField] private List<BaseDialogNode> mNodes;
-		[SerializeField] private List<DialogNodeConnection> mConnections;
+		[SerializeField] private List<BaseNode> mNodes;
+		[SerializeField] private List<BaseConnection> mConnections;
+
+		/// <summary>
+		/// A read-only copy of this asset's dialog nodes. Can be traversed in-game.
+		/// </summary>
+		public ReadOnlyCollection<BaseNode> nodes { get { return mNodes.AsReadOnly(); } }
+
+		/// <summary>
+		/// A read-only copy of this asset's connections. Generally not useful in-game.
+		/// </summary>
+		public ReadOnlyCollection<BaseConnection> connections { get { return mConnections.AsReadOnly(); } }
 
 #if UNITY_EDITOR
 
 		/// <summary>
 		/// Returns this asset's list of nodes.
 		/// </summary>
-		[NotNull] public List<BaseDialogNode> GetNodes_Editor()
+		[NotNull] public List<BaseNode> GetNodes_Editor()
 		{
-			return mNodes ?? (mNodes = new List<BaseDialogNode>());
+			return mNodes ?? (mNodes = new List<BaseNode>());
 		}
 
 		/// <summary>
@@ -26,12 +42,12 @@ namespace NodeDialog
 		/// Registers all changes into the UnityEditor.Undo system.
 		/// </summary>
 		/// <returns>The newly created node.</returns>
-		[NotNull] public BaseDialogNode AddNode_Editor<T>() where T : BaseDialogNode
+		[NotNull] public BaseNode AddNode_Editor<T>() where T : BaseNode
 		{
 			if (mNodes == null)
-				mNodes = new List<BaseDialogNode>();
+				mNodes = new List<BaseNode>();
 
-			BaseDialogNode newNode = CreateInstance<T>();
+			BaseNode newNode = CreateInstance<T>();
 
 			UnityEditor.Undo.RegisterCreatedObjectUndo(newNode, "Create New Node");
 			UnityEditor.Undo.RecordObject(this, "Create New Node");
@@ -48,15 +64,15 @@ namespace NodeDialog
 		/// Registers all changes into the UnityEditor.Undo system.
 		/// </summary>
 		/// <param name="node">The node to remove.</param>
-		public void RemoveNode_Editor(BaseDialogNode node)
+		public void RemoveNode_Editor(BaseNode node)
 		{
 			if (mNodes == null)
-				mNodes = new List<BaseDialogNode>();
+				mNodes = new List<BaseNode>();
 
 			// Remove all this node's connections
 			for (int i = 0; i < mConnections.Count; ++i)
 			{
-				DialogNodeConnection c = mConnections[i];
+				BaseConnection c = mConnections[i];
 				if (c.inNode != node && c.outNode != node)
 					continue;
 
@@ -78,9 +94,9 @@ namespace NodeDialog
 		/// <summary>
 		/// Returns this asset's list of connections.
 		/// </summary>
-		[NotNull] public List<DialogNodeConnection> GetConnections_Editor()
+		[NotNull] public List<BaseConnection> GetConnections_Editor()
 		{
-			return mConnections ?? (mConnections = new List<DialogNodeConnection>());
+			return mConnections ?? (mConnections = new List<BaseConnection>());
 		}
 
 		/// <summary>
@@ -90,12 +106,12 @@ namespace NodeDialog
 		/// <param name="node1">The 'in' node of this connection</param>
 		/// <param name="node2">The 'out' node of this connection.</param>
 		/// <returns>The newly created connection</returns>
-		[NotNull] public DialogNodeConnection AddConnection_Editor(BaseDialogNode node1, BaseDialogNode node2)
+		[NotNull] public BaseConnection AddConnection_Editor(BaseNode node1, BaseNode node2)
 		{
 			if (mConnections == null)
-				mConnections = new List<DialogNodeConnection>();
+				mConnections = new List<BaseConnection>();
 
-			DialogNodeConnection newConnection = CreateInstance<DialogNodeConnection>();
+			BaseConnection newConnection = CreateInstance<BaseConnection>();
 			newConnection.inNode = node1;
 			newConnection.outNode = node2;
 			
@@ -116,12 +132,12 @@ namespace NodeDialog
 		/// Registers all changes into the UnityEditor.Undo system.
 		/// </summary>
 		/// <param name="connection">The connection to remove.</param>
-		public void RemoveConnection_Editor(DialogNodeConnection connection)
+		public void RemoveConnection_Editor(BaseConnection connection)
 		{
 			if (mConnections == null)
-				mConnections = new List<DialogNodeConnection>();
+				mConnections = new List<BaseConnection>();
 
-			BaseDialogNode inNode = connection.inNode;
+			BaseNode inNode = connection.inNode;
 
 			UnityEditor.Undo.RegisterCompleteObjectUndo(this, "Delete Connection");
 			UnityEditor.Undo.RegisterCompleteObjectUndo(inNode, "Delete Connection");
@@ -144,7 +160,7 @@ namespace NodeDialog
 			string path = UnityEditor.AssetDatabase.GetAssetPath(this);
 			var subassets = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(path);
 
-			foreach (BaseDialogNode node in mNodes)
+			foreach (BaseNode node in mNodes)
 			{
 				if (subassets.Contains(node))
 					continue;
@@ -153,7 +169,7 @@ namespace NodeDialog
 				node.hideFlags = HideFlags.HideInHierarchy;
 			}
 
-			foreach (DialogNodeConnection conn in mConnections)
+			foreach (BaseConnection conn in mConnections)
 			{
 				if (subassets.Contains(conn))
 					continue;
