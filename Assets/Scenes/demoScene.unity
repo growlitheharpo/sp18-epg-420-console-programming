@@ -286,7 +286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cbf44805062ced4fbfe09f65f5f7722, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mDialogAsset: {fileID: 11400000, guid: b10ed213eccdcb24a8987267c6984826, type: 2}
+  mDialogAsset: {fileID: 11400000, guid: 071588b6d6ceb124d886cf15cc68904f, type: 2}
 --- !u!4 &1857542560
 Transform:
   m_ObjectHideFlags: 0

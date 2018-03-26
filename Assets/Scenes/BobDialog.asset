@@ -12,32 +12,22 @@ MonoBehaviour:
   m_Name: BobDialog
   m_EditorClassIdentifier: 
   mNodes:
-  - {fileID: 114440135802809968}
-  - {fileID: 114589506005327482}
-  - {fileID: 114704065200741728}
-  - {fileID: 114755024280030460}
-  - {fileID: 114062077231459050}
+  - {fileID: 114381278330945844}
+  - {fileID: 114226135750137466}
+  - {fileID: 114113996070266816}
+  - {fileID: 114290530044647552}
+  - {fileID: 114109362537528062}
+  - {fileID: 114357285539405808}
+  - {fileID: 114499663444288430}
   mConnections:
-  - {fileID: 114703931231539638}
-  - {fileID: 114490934080249454}
-  - {fileID: 114139822262005908}
-  - {fileID: 114211280853496766}
-  - {fileID: 114598867895406012}
---- !u!114 &114062077231459050
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ded7a529e447f4c42b1ede86c9476a18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mNodePosition: {x: 319, y: 464}
-  mOutConnections: []
-  mStatement: Farewell.
---- !u!114 &114139822262005908
+  - {fileID: 114935079853991188}
+  - {fileID: 114605732699127186}
+  - {fileID: 114641618610560282}
+  - {fileID: 114003114111322924}
+  - {fileID: 114544045126138230}
+  - {fileID: 114462738722200486}
+  - {fileID: 114625884649137810}
+--- !u!114 &114003114111322924
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -48,24 +38,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mInNode: {fileID: 114589506005327482}
-  mOutNode: {fileID: 114755024280030460}
-  mConnectionText: I choose the second option!
---- !u!114 &114211280853496766
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mInNode: {fileID: 114755024280030460}
-  mOutNode: {fileID: 114062077231459050}
+  mInNode: {fileID: 114113996070266816}
+  mOutNode: {fileID: 114109362537528062}
   mConnectionText: 
---- !u!114 &114440135802809968
+--- !u!114 &114109362537528062
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -74,13 +50,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ded7a529e447f4c42b1ede86c9476a18, type: 3}
-  m_Name: 
+  m_Name: Farewell positive
   m_EditorClassIdentifier: 
-  mNodePosition: {x: 304, y: 96}
-  mOutConnections:
-  - {fileID: 114703931231539638}
-  mStatement: Greetings!
---- !u!114 &114490934080249454
+  mNodePosition: {x: 132, y: 585}
+  mOutConnections: []
+  mStatement: Have a great day now!
+--- !u!114 &114113996070266816
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -88,13 +63,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
-  m_Name: 
+  m_Script: {fileID: 11500000, guid: ded7a529e447f4c42b1ede86c9476a18, type: 3}
+  m_Name: 'Response: Sunny'
   m_EditorClassIdentifier: 
-  mInNode: {fileID: 114589506005327482}
-  mOutNode: {fileID: 114704065200741728}
-  mConnectionText: I choose the first option!
---- !u!114 &114589506005327482
+  mNodePosition: {x: 95, y: 378}
+  mOutConnections:
+  - {fileID: 114003114111322924}
+  mStatement: Wow, great to hear!
+--- !u!114 &114226135750137466
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -103,14 +79,60 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aac22b96e88bc094fb0e3f5d2271b89d, type: 3}
-  m_Name: 
+  m_Name: 'CHOICE: Weather'
   m_EditorClassIdentifier: 
-  mNodePosition: {x: 308, y: 214}
+  mNodePosition: {x: 330, y: 212}
   mOutConnections:
-  - {fileID: 114490934080249454}
-  - {fileID: 114139822262005908}
-  mPrompt: Make a choice!
---- !u!114 &114598867895406012
+  - {fileID: 114605732699127186}
+  - {fileID: 114641618610560282}
+  - {fileID: 114462738722200486}
+  mPrompt: What do you think of the weather around here?
+--- !u!114 &114290530044647552
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ded7a529e447f4c42b1ede86c9476a18, type: 3}
+  m_Name: 'Response: Rainy'
+  m_EditorClassIdentifier: 
+  mNodePosition: {x: 323, y: 378}
+  mOutConnections:
+  - {fileID: 114544045126138230}
+  mStatement: Yeah, we're having a bit of a rainy season.
+--- !u!114 &114357285539405808
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ded7a529e447f4c42b1ede86c9476a18, type: 3}
+  m_Name: 'Response: Rude'
+  m_EditorClassIdentifier: 
+  mNodePosition: {x: 551, y: 374}
+  mOutConnections:
+  - {fileID: 114625884649137810}
+  mStatement: Well fine then!
+--- !u!114 &114381278330945844
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ded7a529e447f4c42b1ede86c9476a18, type: 3}
+  m_Name: Greeting
+  m_EditorClassIdentifier: 
+  mNodePosition: {x: 329, y: 94}
+  mOutConnections:
+  - {fileID: 114935079853991188}
+  mStatement: Wow, you're from a land far away?
+--- !u!114 &114462738722200486
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -121,10 +143,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mInNode: {fileID: 114704065200741728}
-  mOutNode: {fileID: 114062077231459050}
-  mConnectionText: 
---- !u!114 &114703931231539638
+  mInNode: {fileID: 114226135750137466}
+  mOutNode: {fileID: 114357285539405808}
+  mConnectionText: Leave me alone, Bob.
+--- !u!114 &114499663444288430
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ded7a529e447f4c42b1ede86c9476a18, type: 3}
+  m_Name: Farewell negative
+  m_EditorClassIdentifier: 
+  mNodePosition: {x: 482, y: 582}
+  mOutConnections: []
+  mStatement: Have an awful day.
+--- !u!114 &114544045126138230
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -135,10 +171,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mInNode: {fileID: 114440135802809968}
-  mOutNode: {fileID: 114589506005327482}
+  mInNode: {fileID: 114290530044647552}
+  mOutNode: {fileID: 114109362537528062}
   mConnectionText: 
---- !u!114 &114704065200741728
+--- !u!114 &114605732699127186
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -146,14 +182,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ded7a529e447f4c42b1ede86c9476a18, type: 3}
+  m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mNodePosition: {x: 165, y: 329}
-  mOutConnections:
-  - {fileID: 114598867895406012}
-  mStatement: Sorry, the first option was wrong.
---- !u!114 &114755024280030460
+  mInNode: {fileID: 114226135750137466}
+  mOutNode: {fileID: 114290530044647552}
+  mConnectionText: I'm surprised by how much it rains here.
+--- !u!114 &114625884649137810
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -161,10 +196,37 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ded7a529e447f4c42b1ede86c9476a18, type: 3}
+  m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mNodePosition: {x: 478, y: 341}
-  mOutConnections:
-  - {fileID: 114211280853496766}
-  mStatement: Well done. The second option was correct.
+  mInNode: {fileID: 114357285539405808}
+  mOutNode: {fileID: 114499663444288430}
+  mConnectionText: 
+--- !u!114 &114641618610560282
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mInNode: {fileID: 114226135750137466}
+  mOutNode: {fileID: 114113996070266816}
+  mConnectionText: It's a lot more sunny here than back home.
+--- !u!114 &114935079853991188
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mInNode: {fileID: 114381278330945844}
+  mOutNode: {fileID: 114226135750137466}
+  mConnectionText: 
