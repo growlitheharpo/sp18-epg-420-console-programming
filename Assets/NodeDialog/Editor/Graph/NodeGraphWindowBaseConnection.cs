@@ -1,9 +1,10 @@
 ﻿using System;
 using NodeDialog;
 using NodeDialog.Graph;
+using UnityEditor;
 using UnityEngine;
 
-namespace UnityEditor
+namespace NodeDialog.Editor.Graph
 {
 	/// <summary>
 	/// Representation of a BaseConnection on the Node Graph Editor

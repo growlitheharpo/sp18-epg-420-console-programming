@@ -1,8 +1,9 @@
 ﻿using System;
 using NodeDialog.Graph;
+using UnityEditor;
 using UnityEngine;
 
-namespace UnityEditor
+namespace NodeDialog.Editor.Graph
 {
 	/// <summary>
 	/// Representation of a BaseNode on the Node Graph Editor

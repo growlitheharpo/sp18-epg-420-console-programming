@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using NodeDialog;
 using NodeDialog.Graph;
+using UnityEditor;
 using UnityEngine;
 
-namespace UnityEditor
+namespace NodeDialog.Editor.Graph
 {
 	/// <summary>
 	/// The editor window for our dialog node graph.

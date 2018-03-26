@@ -1,4 +1,5 @@
 ﻿using NodeDialog;
+using NodeDialog.Editor.Graph;
 using UnityEngine;
 
 namespace UnityEditor
