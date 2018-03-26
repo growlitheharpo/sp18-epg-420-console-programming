@@ -55,8 +55,8 @@ namespace NodeDialog.Editor.Graph
 			GUIStyle styleCopy = new GUIStyle(mMasterStyle);
 			if (Selection.activeObject == associatedNode)
 				styleCopy.normal = mMasterStyle.focused;
-
-			GUI.Box(associatedNode.rect, associatedNode.name, styleCopy);
+			
+			GUI.Box(associatedNode.rectWithDrag, associatedNode.name, styleCopy);
 		}
 
 		/// <summary>
@@ -72,6 +72,8 @@ namespace NodeDialog.Editor.Graph
 					return HandleEventMouseDown(e);
 				case EventType.MouseUp:
 					mIsDragged = false;
+					if (associatedNode.nodeDrag.sqrMagnitude > 1.0f)
+						ApplyDrag();
 					break;
 				case EventType.MouseDrag:
 					if (e.button == 0 && mIsDragged)
@@ -175,10 +177,19 @@ namespace NodeDialog.Editor.Graph
 		/// <summary>
 		/// Drag the node's position based on the mouse's delta.
 		/// </summary>
-		/// TODO: Accumulate this in a local variable then apply it to the asset on mouse-up.
 		private void Drag(Vector2 delta)
 		{
-			associatedNode.nodePosition += delta;
+			associatedNode.nodeDrag += delta;
+		}
+
+		/// <summary>
+		/// Finalize the drag we've applied and add it to the node's position in an undoable manor.
+		/// </summary>
+		private void ApplyDrag()
+		{
+			Undo.RegisterCompleteObjectUndo(associatedNode, "Drag node");
+			associatedNode.nodePosition += associatedNode.nodeDrag;
+			associatedNode.nodeDrag = Vector2.zero;
 		}
 
 		/// <summary>

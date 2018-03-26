@@ -20,12 +20,12 @@ namespace NodeDialog.Editor.Graph
 		/// <summary>
 		/// The start position of this connection.
 		/// </summary>
-		private Vector2 lineStart { get { return associatedConnection.inNode.rect.center; } }
+		private Vector2 lineStart { get { return associatedConnection.inNode.rectWithDrag.center; } }
 		
 		/// <summary>
 		/// The end position of this connection.
 		/// </summary>
-		private Vector2 lineEnd { get { return associatedConnection.outNode.rect.center; } }
+		private Vector2 lineEnd { get { return associatedConnection.outNode.rectWithDrag.center; } }
 
 		/// <summary>
 		/// Is our connection selected in the Unity editor?
@@ -115,11 +115,18 @@ namespace NodeDialog.Editor.Graph
 		/// </summary>
 		private float LinePointDistance(Vector2 a, Vector2 b, Vector2 p)
 		{
-			//sqrt(((yb - ya) * (xc - xa) + (xb - xa) * (yc - ya)) ^ 2 / ((xb - xa) ^ 2 + (yb - ya) ^ 2))
 			Vector3 toLine = p - a;
 			Vector3 toB = b - a;
 
 			Vector2 proj = Vector3.Project(toLine, toB);
+
+			// Check and make sure "proj" is actually on the line and not off the ends.
+			if (proj.sqrMagnitude > (b - a).sqrMagnitude) // Off the "B" end
+				return Vector2.Distance(p, b);
+
+			if ((proj + a - b).sqrMagnitude > (b - a).sqrMagnitude) // Off the "A" end
+				return Vector2.Distance(p, a);
+
 			return Vector2.Distance(p, proj + a);
 		}
 
