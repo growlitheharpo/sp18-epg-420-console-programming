@@ -7,10 +7,10 @@ namespace UnityEditor
 	/// <summary>
 	/// Representation of a BaseNode on the Node Graph Editor
 	/// </summary>
-	public class BaseDialogGraphNode
+	public class NodeGraphWindowBaseNode
 	{
-		private readonly Action<BaseDialogGraphNode> mRemoveNodeCallback;
-		private readonly Func<BaseDialogGraphNode, Vector2, bool> mTryAddConnectionCallback;
+		private readonly Action<NodeGraphWindowBaseNode> mRemoveNodeCallback;
+		private readonly Func<NodeGraphWindowBaseNode, Vector2, bool> mTryAddConnectionCallback;
 		private readonly GUIStyle mMasterStyle;
 
 		private bool mIsDragged, mInConnectionMode;
@@ -32,7 +32,7 @@ namespace UnityEditor
 		/// <param name="style">The GUIStyle for this node.</param>
 		/// <param name="removeNodeCallback">The callback for when this node needs to be deleted.</param>
 		/// <param name="addConnectionCallback">The callback for when this node wants to add a new connection.</param>
-		public BaseDialogGraphNode(BaseNode node, GUIStyle style, Action<BaseDialogGraphNode> removeNodeCallback, Func<BaseDialogGraphNode, Vector2, bool> addConnectionCallback)
+		public NodeGraphWindowBaseNode(BaseNode node, GUIStyle style, Action<NodeGraphWindowBaseNode> removeNodeCallback, Func<NodeGraphWindowBaseNode, Vector2, bool> addConnectionCallback)
 		{
 			associatedNode = node;
 			mMasterStyle = style;
@@ -46,7 +46,7 @@ namespace UnityEditor
 		public void Draw()
 		{
 			if (mInConnectionMode)
-				DialogNodeGraphConnection.DrawLine(associatedNode.rect.center, Event.current.mousePosition);
+				NodeGraphWindowBaseConnection.DrawLine(associatedNode.rect.center, Event.current.mousePosition);
 
 			GUI.SetNextControlName(associatedNode.GetInstanceID().ToString());
 			

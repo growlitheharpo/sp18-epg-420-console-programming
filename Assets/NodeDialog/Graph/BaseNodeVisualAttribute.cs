@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NodeDialog
+namespace NodeDialog.Graph
 {
 	/// <summary>
 	/// Attribute for describing the assets to use when creating a node.

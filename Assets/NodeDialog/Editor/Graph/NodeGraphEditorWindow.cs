@@ -10,7 +10,7 @@ namespace UnityEditor
 	/// <summary>
 	/// The editor window for our dialog node graph.
 	/// </summary>
-	public class NodeEditorWindow : EditorWindow
+	public class NodeGraphEditorWindow : EditorWindow
 	{
 		private static CharacterDialogAsset kEditingDialog;
 
@@ -20,21 +20,21 @@ namespace UnityEditor
 		public static void CreateNewWindow(DialogCharacter dialogCharacter)
 		{
 			kEditingDialog = dialogCharacter.dialogAsset;
-			NodeEditorWindow window = GetWindow<NodeEditorWindow>();
+			NodeGraphEditorWindow window = GetWindow<NodeGraphEditorWindow>();
 			window.titleContent = new GUIContent("Node Dialog Editor");
 		}
 
 		private CharacterDialogAsset mCachedDialogAsset;
-		private List<BaseDialogGraphNode> mNodes;
-		private List<DialogNodeGraphConnection> mConnections;
+		private List<NodeGraphWindowBaseNode> mNodes;
+		private List<NodeGraphWindowBaseConnection> mConnections;
 
 		/// <summary>
 		/// Setup all of the styles that we're going to use.
 		/// </summary>
 		private void OnEnable()
 		{
-			mNodes = new List<BaseDialogGraphNode>();
-			mConnections = new List<DialogNodeGraphConnection>();
+			mNodes = new List<NodeGraphWindowBaseNode>();
+			mConnections = new List<NodeGraphWindowBaseConnection>();
 			
 			InitializeFromCharacter();
 
@@ -80,8 +80,8 @@ namespace UnityEditor
 		/// </summary>
 		private void InitializeFromCharacter()
 		{
-			mNodes = new List<BaseDialogGraphNode>();
-			mConnections = new List<DialogNodeGraphConnection>();
+			mNodes = new List<NodeGraphWindowBaseNode>();
+			mConnections = new List<NodeGraphWindowBaseConnection>();
 
 			mCachedDialogAsset = kEditingDialog;
 			if (mCachedDialogAsset == null)
@@ -89,11 +89,11 @@ namespace UnityEditor
 
 			var nodes = mCachedDialogAsset.GetNodes_Editor();
 			foreach (BaseNode n in nodes)
-				mNodes.Add(new BaseDialogGraphNode(n, GenerateNodeStyle(n.GetType()), OnRemoveNode, OnTryAddConnection));
+				mNodes.Add(new NodeGraphWindowBaseNode(n, GenerateNodeStyle(n.GetType()), OnRemoveNode, OnTryAddConnection));
 
 			var conns = mCachedDialogAsset.GetConnections_Editor();
 			foreach (BaseConnection c in conns)
-				mConnections.Add(new DialogNodeGraphConnection(c, OnRemoveConnection));
+				mConnections.Add(new NodeGraphWindowBaseConnection(c, OnRemoveConnection));
 		}
 
 		/// <summary>
@@ -196,7 +196,7 @@ namespace UnityEditor
 			if (mConnections == null)
 				return;
 			
-			foreach (DialogNodeGraphConnection c in mConnections)
+			foreach (NodeGraphWindowBaseConnection c in mConnections)
 				c.Draw();
 		}
 
@@ -208,7 +208,7 @@ namespace UnityEditor
 			if (mNodes == null)
 				return;
 
-			foreach (BaseDialogGraphNode node in mNodes)
+			foreach (NodeGraphWindowBaseNode node in mNodes)
 				node.Draw();
 		}
 
@@ -269,9 +269,9 @@ namespace UnityEditor
 		/// <param name="startNode">The node we are drawing the connection FROM</param>
 		/// <param name="mousePosition">The current mouse position.</param>
 		/// <returns>True if this was successful, otherwise false.</returns>
-		private bool OnTryAddConnection(BaseDialogGraphNode startNode, Vector2 mousePosition)
+		private bool OnTryAddConnection(NodeGraphWindowBaseNode startNode, Vector2 mousePosition)
 		{
-			BaseDialogGraphNode target = mNodes.LastOrDefault(x => x.associatedNode.rect.Contains(mousePosition) && x != startNode);
+			NodeGraphWindowBaseNode target = mNodes.LastOrDefault(x => x.associatedNode.rect.Contains(mousePosition) && x != startNode);
 
 			// If target is null, or we already have a connection to it, "fail" this connection.
 			if (target == null || startNode.associatedNode.outConnections.Any(x => x.outNode == target.associatedNode))
@@ -279,7 +279,7 @@ namespace UnityEditor
 
 			// Create a new connection
 			BaseConnection connection = mCachedDialogAsset.AddConnection_Editor(startNode.associatedNode, target.associatedNode);
-			mConnections.Add(new DialogNodeGraphConnection(connection, OnRemoveConnection));
+			mConnections.Add(new NodeGraphWindowBaseConnection(connection, OnRemoveConnection));
 
 			return true;
 		}
@@ -294,7 +294,7 @@ namespace UnityEditor
 			BaseNode newRealNode = mCachedDialogAsset.AddNode_Editor<DialogStatementNode>();
 			newRealNode.nodePosition = mousePosition;
 
-			mNodes.Add(new BaseDialogGraphNode(newRealNode, GenerateNodeStyle(newRealNode.GetType()), OnRemoveNode, OnTryAddConnection));
+			mNodes.Add(new NodeGraphWindowBaseNode(newRealNode, GenerateNodeStyle(newRealNode.GetType()), OnRemoveNode, OnTryAddConnection));
 		}
 
 		/// <summary>
@@ -307,14 +307,14 @@ namespace UnityEditor
 			BaseNode newRealNode = mCachedDialogAsset.AddNode_Editor<DialogChoiceNode>();
 			newRealNode.nodePosition = mousePosition;
 
-			mNodes.Add(new BaseDialogGraphNode(newRealNode, GenerateNodeStyle(newRealNode.GetType()), OnRemoveNode, OnTryAddConnection));
+			mNodes.Add(new NodeGraphWindowBaseNode(newRealNode, GenerateNodeStyle(newRealNode.GetType()), OnRemoveNode, OnTryAddConnection));
 		}
 
 		/// <summary>
 		/// Handle the user attempting to remove a node.
 		/// </summary>
 		/// <param name="n">The node that is being removed.</param>
-		private void OnRemoveNode(BaseDialogGraphNode n)
+		private void OnRemoveNode(NodeGraphWindowBaseNode n)
 		{
 			// Delete the asset, but allow it to be undone.
 			mCachedDialogAsset.RemoveNode_Editor(n.associatedNode);
@@ -327,7 +327,7 @@ namespace UnityEditor
 		/// Handle the user attempting to remove a connection.
 		/// </summary>
 		/// <param name="connection">The connection to remove.</param>
-		private void OnRemoveConnection(DialogNodeGraphConnection connection)
+		private void OnRemoveConnection(NodeGraphWindowBaseConnection connection)
 		{
 			// Delete the asset, but allow it to be undone.
 			mCachedDialogAsset.RemoveConnection_Editor(connection.associatedConnection);

@@ -13,7 +13,7 @@ namespace UnityEditor
             DrawDefaultInspector();
 
             if (GUILayout.Button("Edit Dialog Tree"))
-                NodeEditorWindow.CreateNewWindow(target as DialogCharacter);
+                NodeGraphEditorWindow.CreateNewWindow(target as DialogCharacter);
         }
     }
 }

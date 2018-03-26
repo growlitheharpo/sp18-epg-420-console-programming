@@ -8,13 +8,13 @@ namespace UnityEditor
 	/// <summary>
 	/// Representation of a BaseConnection on the Node Graph Editor
 	/// </summary>
-	public class DialogNodeGraphConnection
+	public class NodeGraphWindowBaseConnection
 	{
 		private const float SELECTION_RADIUS = 5.0f;
 		private static Color selectedColor { get { return new Color(0.42f, 0.7f, 1.0f); } }
 		private static Color standardColor { get { return Color.white; } }
 
-		private readonly Action<DialogNodeGraphConnection> mOnDeleteConnection;
+		private readonly Action<NodeGraphWindowBaseConnection> mOnDeleteConnection;
 
 		/// <summary>
 		/// The start position of this connection.
@@ -41,7 +41,7 @@ namespace UnityEditor
 		/// </summary>
 		/// <param name="connection">The actual connection asset that this graph connection will be associated with.</param>
 		/// <param name="onDeleteConnection">The callback for when this node wants to add a new connection.</param>
-		public DialogNodeGraphConnection(BaseConnection connection, Action<DialogNodeGraphConnection> onDeleteConnection)
+		public NodeGraphWindowBaseConnection(BaseConnection connection, Action<NodeGraphWindowBaseConnection> onDeleteConnection)
 		{
 			associatedConnection = connection;
 			mOnDeleteConnection = onDeleteConnection;
