@@ -11,14 +11,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bed9748d1b90a1e40b14e7cbc4641037, type: 3}
   m_Name: BobDialog
   m_EditorClassIdentifier: 
-  mNodes:
-  - {fileID: 114381278330945844}
-  - {fileID: 114226135750137466}
-  - {fileID: 114113996070266816}
-  - {fileID: 114290530044647552}
-  - {fileID: 114109362537528062}
-  - {fileID: 114357285539405808}
-  - {fileID: 114499663444288430}
   mConnections:
   - {fileID: 114935079853991188}
   - {fileID: 114605732699127186}
@@ -27,6 +19,14 @@ MonoBehaviour:
   - {fileID: 114544045126138230}
   - {fileID: 114462738722200486}
   - {fileID: 114625884649137810}
+  mNodes:
+  - {fileID: 114381278330945844}
+  - {fileID: 114226135750137466}
+  - {fileID: 114113996070266816}
+  - {fileID: 114290530044647552}
+  - {fileID: 114109362537528062}
+  - {fileID: 114357285539405808}
+  - {fileID: 114499663444288430}
 --- !u!114 &114003114111322924
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -38,9 +38,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mConnectionText: 
   mInNode: {fileID: 114113996070266816}
   mOutNode: {fileID: 114109362537528062}
-  mConnectionText: 
 --- !u!114 &114109362537528062
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -54,6 +54,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mNodePosition: {x: 132, y: 585}
   mOutConnections: []
+  mUserVariables: []
   mStatement: Have a great day now!
 --- !u!114 &114113996070266816
 MonoBehaviour:
@@ -69,6 +70,7 @@ MonoBehaviour:
   mNodePosition: {x: 95, y: 378}
   mOutConnections:
   - {fileID: 114003114111322924}
+  mUserVariables: []
   mStatement: Wow, great to hear!
 --- !u!114 &114226135750137466
 MonoBehaviour:
@@ -81,11 +83,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aac22b96e88bc094fb0e3f5d2271b89d, type: 3}
   m_Name: 'CHOICE: Weather'
   m_EditorClassIdentifier: 
-  mNodePosition: {x: 330, y: 212}
+  mNodePosition: {x: 329, y: 211}
   mOutConnections:
   - {fileID: 114605732699127186}
   - {fileID: 114641618610560282}
   - {fileID: 114462738722200486}
+  mUserVariables:
+  - mName: CharacterName
+    mValue: Bob
+  - mName: Face
+    mValue: 
+  - mName: 
+    mValue: 
   mPrompt: What do you think of the weather around here?
 --- !u!114 &114290530044647552
 MonoBehaviour:
@@ -101,6 +110,7 @@ MonoBehaviour:
   mNodePosition: {x: 323, y: 378}
   mOutConnections:
   - {fileID: 114544045126138230}
+  mUserVariables: []
   mStatement: Yeah, we're having a bit of a rainy season.
 --- !u!114 &114357285539405808
 MonoBehaviour:
@@ -116,6 +126,7 @@ MonoBehaviour:
   mNodePosition: {x: 551, y: 374}
   mOutConnections:
   - {fileID: 114625884649137810}
+  mUserVariables: []
   mStatement: Well fine then!
 --- !u!114 &114381278330945844
 MonoBehaviour:
@@ -128,9 +139,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ded7a529e447f4c42b1ede86c9476a18, type: 3}
   m_Name: Greeting
   m_EditorClassIdentifier: 
-  mNodePosition: {x: 329, y: 94}
+  mNodePosition: {x: 329, y: 96}
   mOutConnections:
   - {fileID: 114935079853991188}
+  mUserVariables:
+  - mName: FacialAnimation
+    mValue: BobSmile
+  - mName: BodyAnimation
+    mValue: StandCurious
   mStatement: Wow, you're from a land far away?
 --- !u!114 &114462738722200486
 MonoBehaviour:
@@ -143,9 +159,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mConnectionText: Leave me alone, Bob.
   mInNode: {fileID: 114226135750137466}
   mOutNode: {fileID: 114357285539405808}
-  mConnectionText: Leave me alone, Bob.
 --- !u!114 &114499663444288430
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -159,6 +175,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mNodePosition: {x: 482, y: 582}
   mOutConnections: []
+  mUserVariables: []
   mStatement: Have an awful day.
 --- !u!114 &114544045126138230
 MonoBehaviour:
@@ -171,9 +188,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mConnectionText: 
   mInNode: {fileID: 114290530044647552}
   mOutNode: {fileID: 114109362537528062}
-  mConnectionText: 
 --- !u!114 &114605732699127186
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -185,9 +202,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mConnectionText: I'm surprised by how much it rains here.
   mInNode: {fileID: 114226135750137466}
   mOutNode: {fileID: 114290530044647552}
-  mConnectionText: I'm surprised by how much it rains here.
 --- !u!114 &114625884649137810
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -199,9 +216,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mConnectionText: 
   mInNode: {fileID: 114357285539405808}
   mOutNode: {fileID: 114499663444288430}
-  mConnectionText: 
 --- !u!114 &114641618610560282
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -213,9 +230,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mConnectionText: It's a lot more sunny here than back home.
   mInNode: {fileID: 114226135750137466}
   mOutNode: {fileID: 114113996070266816}
-  mConnectionText: It's a lot more sunny here than back home.
 --- !u!114 &114935079853991188
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -227,6 +244,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b0da0eba5fdde3438387ead0e820746, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mConnectionText: 
   mInNode: {fileID: 114381278330945844}
   mOutNode: {fileID: 114226135750137466}
-  mConnectionText: 

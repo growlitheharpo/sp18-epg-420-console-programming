@@ -12,8 +12,8 @@ namespace NodeDialog.Graph
 		// These are used in the editor
 		private const float WIDTH = 200.0f, HEIGHT = 50.0f;
 
-		[SerializeField] private Vector2 mNodePosition;
-		[SerializeField] private List<BaseConnection> mOutConnections;
+		[SerializeField] [HideInInspector] private Vector2 mNodePosition;
+		[SerializeField] [HideInInspector] private List<BaseConnection> mOutConnections;
 
 		// Temporary drag variable. Only usable in-editor.
 		private Vector2 mDrag;

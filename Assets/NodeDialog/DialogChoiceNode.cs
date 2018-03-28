@@ -8,7 +8,7 @@ namespace NodeDialog
 	/// will say that can then be responded to by the player through its transitions.
 	/// </summary>
 	[BaseNodeVisual("node0 hex", "node0 hex on")]
-	public class DialogChoiceNode : BaseNode
+	public class DialogChoiceNode : DialogBaseNode
 	{
 		/// <summary>
 		/// The line of dialog (or a token for localization) that this character will say to prompt the player.

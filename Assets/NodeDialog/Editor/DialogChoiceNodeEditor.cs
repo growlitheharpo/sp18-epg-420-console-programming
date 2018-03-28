@@ -11,7 +11,8 @@ namespace NodeDialog.Editor
 			serializedObject.Update();
 
 			DrawNameField();
-			DrawDefaultInspector();
+			DrawSingleProperty("mPrompt");
+			DrawUserVariables();
 
 			serializedObject.ApplyModifiedProperties();
 		}
