@@ -37,6 +37,8 @@ namespace NodeDialog
 		{
 			private Dictionary<string, string> mDictionaryRepresentation;
 
+			public UserVariableList(IEnumerable<UserVariable> other) : base(other) { }
+
 			private Dictionary<string, string> GenerateDictionary()
 			{
 				mDictionaryRepresentation = new Dictionary<string, string>();
@@ -52,5 +54,11 @@ namespace NodeDialog
 		}
 
 		[SerializeField] private List<UserVariable> mUserVariables;
+		private UserVariableList mInnerVariableList;
+
+		public UserVariableList userVariables
+		{
+			get { return mInnerVariableList ?? (mInnerVariableList = new UserVariableList(mUserVariables)); }
+		}
 	}
 }

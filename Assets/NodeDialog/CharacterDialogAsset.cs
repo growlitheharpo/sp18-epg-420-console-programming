@@ -27,6 +27,12 @@ namespace NodeDialog
 		/// </summary>
 		public ReadOnlyCollection<BaseConnection> connections { get { return mConnections.AsReadOnly(); } }
 
+		/// <summary>
+		/// Get the first node in this asset.
+		/// TODO: Make this safer by flagging the node OR finding the one with no "in" connections
+		/// </summary>
+		public DialogBaseNode rootNode { get { return mNodes[0] as DialogBaseNode; } }
+
 #if UNITY_EDITOR
 
 		/// <summary>
@@ -118,7 +124,7 @@ namespace NodeDialog
 			BaseConnection newConnection = CreateInstance<BaseConnection>();
 			newConnection.inNode = node1;
 			newConnection.outNode = node2;
-			
+
 			UnityEditor.Undo.RegisterCreatedObjectUndo(newConnection, "Create New Connection");
 			UnityEditor.Undo.RecordObject(node1, "Create New Connection");
 			UnityEditor.Undo.RecordObject(this, "Create New Connection");
@@ -177,12 +183,11 @@ namespace NodeDialog
 			{
 				if (subassets.Contains(conn))
 					continue;
-				
+
 				UnityEditor.AssetDatabase.AddObjectToAsset(conn, this);
 				conn.hideFlags = HideFlags.HideInHierarchy;
 			}
 		}
-	}
-
 #endif
+	}
 }

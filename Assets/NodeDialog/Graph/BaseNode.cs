@@ -15,8 +15,24 @@ namespace NodeDialog.Graph
 		[SerializeField] [HideInInspector] private Vector2 mNodePosition;
 		[SerializeField] [HideInInspector] private List<BaseConnection> mOutConnections;
 
-		// Temporary drag variable. Only usable in-editor.
-		private Vector2 mDrag;
+#if UNITY_EDITOR
+
+		/// <summary>
+		/// EDITOR ONLY.
+		/// Temporary drag variable. Not serialized.
+		/// </summary>
+		public Vector2 nodeDrag { get; set; }
+
+		/// <summary>
+		/// EDITOR ONLY.
+		/// The rect of this node after non-serialized drag has been applied.
+		/// </summary>
+		public Rect rectWithDrag
+		{
+			get { return new Rect(mNodePosition + nodeDrag, new Vector2(WIDTH, HEIGHT)); }
+		}
+
+#endif
 
 		/// <summary>
 		/// The position of this node on the editor graph. Not useful at runtime.
@@ -27,40 +43,12 @@ namespace NodeDialog.Graph
 			set { mNodePosition = value; }
 		}
 
-		public Vector2 nodeDrag
-		{
-			get
-			{
-#if UNITY_EDITOR
-				return mDrag;
-#else
-				return Vector2.zero;
-#endif
-			}
-			set
-			{
-#if UNITY_EDITOR
-				mDrag = value;
-#else
-				;
-#endif
-			}
-		}
-
 		/// <summary>
 		/// The rect of this node (in the editor).
 		/// </summary>
 		public Rect rect
 		{
 			get { return new Rect(mNodePosition, new Vector2(WIDTH, HEIGHT)); }
-		}
-
-		/// <summary>
-		/// The rect of this node after drag has been applied (in the editor).
-		/// </summary>
-		public Rect rectWithDrag
-		{
-			get { return new Rect(mNodePosition + mDrag, new Vector2(WIDTH, HEIGHT)); }
 		}
 
 		/// <summary>

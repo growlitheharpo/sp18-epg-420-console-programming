@@ -1,11 +1,12 @@
-﻿using NodeDialog;
-using NodeDialog.Editor.Graph;
+﻿using NodeDialog.Editor.Graph;
+using NodeDialog.Interfaces;
+using NodeDialog.Samples;
 using UnityEngine;
 
 namespace UnityEditor
 {
-	[CustomEditor(typeof(DialogCharacter))]
-	public class DialogCharacterEditor : Editor
+	[CustomEditor(typeof(SampleDialogCharacter))]
+	public class SampleDialogCharacterEditor : Editor
 	{
 		/// <inheritdoc />
 		public override void OnInspectorGUI()
@@ -14,7 +15,7 @@ namespace UnityEditor
 			DrawDefaultInspector();
 
 			if (GUILayout.Button("Edit Dialog Tree"))
-				NodeGraphEditorWindow.CreateNewWindow(target as DialogCharacter);
+				NodeGraphEditorWindow.CreateNewWindow(target as IDialogSpeaker);
 		}
 	}
 }

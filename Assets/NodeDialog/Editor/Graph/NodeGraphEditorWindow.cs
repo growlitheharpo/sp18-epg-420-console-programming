@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NodeDialog.Graph;
+using NodeDialog.Interfaces;
 using UnityEditor;
 using UnityEngine;
 
@@ -22,11 +23,12 @@ namespace NodeDialog.Editor.Graph
 		/// <summary>
 		/// Create a new window for the provided character.
 		/// </summary>
-		public static void CreateNewWindow(DialogCharacter dialogCharacter)
+		public static void CreateNewWindow(IDialogSpeaker dialogCharacter)
 		{
 			kEditingDialog = dialogCharacter.dialogAsset;
 			NodeGraphEditorWindow window = GetWindow<NodeGraphEditorWindow>();
 			window.titleContent = new GUIContent("Node Dialog Editor");
+			window.OnEnable();
 		}
 
 		/// <summary>

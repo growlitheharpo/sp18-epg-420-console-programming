@@ -1,4 +1,6 @@
-﻿using NodeDialog.Graph;
+﻿using System.Collections.Generic;
+using NodeDialog.Graph;
+using NodeDialog.Interfaces;
 using UnityEngine;
 
 namespace NodeDialog
@@ -13,7 +15,22 @@ namespace NodeDialog
 		/// <summary>
 		/// The line of dialog (or a token for localization) that this character will say.
 		/// </summary>
-		[Tooltip("The line of dialog (or a token for localization) that this character will say.")] [SerializeField]
+		[Tooltip("The line of dialog (or a token for localization) that this character will say.")] 
+		[SerializeField] 
 		private string mStatement;
+
+		/// <summary>
+		/// The line of dialog (or a token for localization) that this character will say.
+		/// </summary>
+		public string statement { get { return mStatement; } }
+
+		/// <summary>
+		/// Get the statement for this node pre-localized.
+		/// </summary>
+		/// <param name="manager">The manager that handles localization.</param>
+		public string GetLocalizedStatement(IDialogManager manager)
+		{
+			return manager.LocalizeToken(statement);
+		}
 	}
 }
