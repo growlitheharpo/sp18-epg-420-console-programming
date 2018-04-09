@@ -32,10 +32,9 @@ namespace NodeDialog.Graph
 			get { return new Rect(mNodePosition + nodeDrag, new Vector2(WIDTH, HEIGHT)); }
 		}
 
-#endif
-
 		/// <summary>
-		/// The position of this node on the editor graph. Not useful at runtime.
+		/// EDITOR ONLY.
+		/// The position of this node on the editor graph.
 		/// </summary>
 		public Vector2 nodePosition
 		{
@@ -44,12 +43,15 @@ namespace NodeDialog.Graph
 		}
 
 		/// <summary>
+		/// EDITOR ONLY.
 		/// The rect of this node (in the editor).
 		/// </summary>
 		public Rect rect
 		{
 			get { return new Rect(mNodePosition, new Vector2(WIDTH, HEIGHT)); }
 		}
+
+#endif
 
 		/// <summary>
 		/// The connections leading out of this node.
