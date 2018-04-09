@@ -17,6 +17,7 @@ namespace NodeDialog.Editor.Graph
 		private CharacterDialogAsset mCachedDialogAsset;
 		private List<NodeGraphWindowBaseConnection> mConnections;
 		private List<NodeGraphWindowBaseNode> mNodes;
+		private Vector2 mDragDelta;
 
 		/// <summary>
 		/// Create a new window for the provided character.
@@ -132,12 +133,15 @@ namespace NodeDialog.Editor.Graph
 			DrawBackground();
 			DrawGrid(12.0f, Color.white * 0.420f);
 			DrawGrid(120.0f, Color.white * 0.29f);
-
+			
 			if (mCachedDialogAsset == null)
 				return;
 
 			if (mCachedDialogAsset != kEditingDialog || mCachedDialogAsset.GetNodes_Editor().Count != mNodes.Count)
 				InitializeFromCharacter();
+			
+			Matrix4x4 pop = GUI.matrix;
+			GUI.matrix = Matrix4x4.TRS(mDragDelta, Quaternion.identity, Vector3.one) * pop;
 
 			DrawConnections();
 			DrawNodes();
@@ -146,10 +150,10 @@ namespace NodeDialog.Editor.Graph
 			ProcessNodeEvents(Event.current);
 			ProcessEvents(Event.current);
 
-			GUI.changed = true;
-
 			if (GUI.changed)
 				Repaint();
+
+			GUI.matrix = pop;
 		}
 
 		/// <summary>
@@ -170,19 +174,25 @@ namespace NodeDialog.Editor.Graph
 		/// <param name="col">The color of the line.</param>
 		private void DrawGrid(float spacing, Color col)
 		{
-			int widthDivs = Mathf.CeilToInt(position.width / spacing);
-			int heightDivs = Mathf.CeilToInt(position.height / spacing);
+			int widthDivs = Mathf.CeilToInt(position.width / spacing) + 1;
+			int heightDivs = Mathf.CeilToInt(position.height / spacing) + 1;
+
+			Vector3 drag = Vector3.zero;
+			drag.x = mDragDelta.x % spacing;
 
 			Handles.BeginGUI();
 			Handles.color = new Color(col.r, col.g, col.b, 1.0f);
 
 			// Draw the vertical lines
 			for (int i = 0; i < widthDivs; i++)
-				Handles.DrawLine(new Vector3(spacing * i, 0.0f, 0), new Vector3(spacing * i, position.height, 0.0f));
+				Handles.DrawLine(new Vector3(spacing * i, 0.0f, 0) + drag, new Vector3(spacing * i, position.height, 0.0f) + drag);
+
+			drag.x = 0.0f;
+			drag.y = mDragDelta.y % spacing;
 
 			// Draw the horizontal lines
 			for (int i = 0; i < heightDivs; i++)
-				Handles.DrawLine(new Vector3(0.0f, spacing * i, 0), new Vector3(position.width, spacing * i, 0.0f));
+				Handles.DrawLine(new Vector3(0.0f, spacing * i, 0) + drag, new Vector3(position.width, spacing * i, 0.0f) + drag);
 
 			Handles.color = Color.white;
 			Handles.EndGUI();
@@ -245,6 +255,13 @@ namespace NodeDialog.Editor.Graph
 		{
 			switch (current.type)
 			{
+				case EventType.MouseDrag:
+					if (current.modifiers == EventModifiers.Alt)
+					{
+						mDragDelta += current.delta;
+						GUI.changed = true;
+					}
+					break;
 				case EventType.MouseDown:
 					if (current.button == 1)
 						ProcessContextMenu(current.mousePosition);

@@ -89,12 +89,10 @@ MonoBehaviour:
   - {fileID: 114641618610560282}
   - {fileID: 114462738722200486}
   mUserVariables:
-  - mName: CharacterName
-    mValue: Bob
-  - mName: Face
-    mValue: 
-  - mName: 
-    mValue: 
+  - mName: FacialAnimation
+    mValue: BobCurious
+  - mName: BodyAnimation
+    mValue: BobLeanQuestioning
   mPrompt: What do you think of the weather around here?
 --- !u!114 &114290530044647552
 MonoBehaviour:
