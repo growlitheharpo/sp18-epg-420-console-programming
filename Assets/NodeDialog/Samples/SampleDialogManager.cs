@@ -31,7 +31,7 @@ namespace NodeDialog.Samples
 			if (statement != null)
 			{
 				// Execute it if it is
-				speaker.HandleStatement(statement.userVariables.ToDictionary(), statement.GetLocalizedStatement(this));
+				speaker.HandleStatement(statement.userVariableDictionary, statement.GetLocalizedStatement(this));
 
 				// Save our return point as the next node, or clear our save if there isn't one (we return to the start)
 				if (statement.outConnections.Count > 0)
@@ -46,7 +46,7 @@ namespace NodeDialog.Samples
 				if (choice != null)
 				{
 					// Execute if it is
-					speaker.HandlePlayerChoice(choice.userVariables.ToDictionary(), choice.GetLocalizedPrompt(this), choice.outConnections, a =>
+					speaker.HandlePlayerChoice(choice.userVariableDictionary, choice.GetLocalizedPrompt(this), choice.outConnections, a =>
 					{
 						mNodeMap[speaker] = a.outNode;
 					});

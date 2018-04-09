@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace NodeDialog
 {
@@ -32,33 +31,27 @@ namespace NodeDialog
 			}
 		}
 
-		[Serializable]
-		public class UserVariableList : List<UserVariable>
+		[SerializeField] private List<UserVariable> mUserVariables;
+		private Dictionary<string, string> mCachedDictionaryCopy;
+
+		public List<UserVariable> userVariableList
 		{
-			private Dictionary<string, string> mDictionaryRepresentation;
-
-			public UserVariableList(IEnumerable<UserVariable> other) : base(other) { }
-
-			private Dictionary<string, string> GenerateDictionary()
-			{
-				mDictionaryRepresentation = new Dictionary<string, string>();
-				foreach (var v in this)
-					mDictionaryRepresentation.Add(v.name, v.value);
-				return mDictionaryRepresentation;
-			}
-
-			public Dictionary<string, string> ToDictionary()
-			{
-				return mDictionaryRepresentation ?? GenerateDictionary();
-			}
+			get { return mUserVariables; }
 		}
 
-		[SerializeField] private List<UserVariable> mUserVariables;
-		private UserVariableList mInnerVariableList;
-
-		public UserVariableList userVariables
+		public Dictionary<string, string> userVariableDictionary
 		{
-			get { return mInnerVariableList ?? (mInnerVariableList = new UserVariableList(mUserVariables)); }
+			get
+			{
+				if (mCachedDictionaryCopy != null)
+					return mCachedDictionaryCopy;
+				
+				mCachedDictionaryCopy = new Dictionary<string, string>();
+				foreach (UserVariable v in mUserVariables)
+					mCachedDictionaryCopy.Add(v.name, v.value);
+
+				return mCachedDictionaryCopy;
+			}
 		}
 	}
 }
