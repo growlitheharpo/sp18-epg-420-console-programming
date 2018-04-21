@@ -14,7 +14,7 @@ namespace NodeDialog.Events
 		/// Super base-level internal class
 		/// </summary>
 		[Serializable]
-		private abstract class NodeEventBase
+		public abstract class NodeEventBase
 		{
 			/// <summary>
 			/// Invoke this event.
@@ -26,7 +26,7 @@ namespace NodeDialog.Events
 		/// NodeEvent for when a direct reference to a component is available
 		/// </summary>
 		[Serializable]
-		private class NodeEventComponent : NodeEventBase
+		public class NodeEventComponent : NodeEventBase
 		{
 			[SerializeField] public Component mTarget;
 			[SerializeField] public string mMethodName;
@@ -47,7 +47,7 @@ namespace NodeDialog.Events
 		/// NodeEvent for when the function is public and static inside a script.
 		/// </summary>
 		[Serializable]
-		private class NodeEventStatic : NodeEventBase
+		public class NodeEventStatic : NodeEventBase
 		{
 			[SerializeField] public string mClassName;
 			[SerializeField] public string mMethodName;
@@ -72,7 +72,7 @@ namespace NodeDialog.Events
 		/// injected at runtime.
 		/// </summary>
 		[Serializable]
-		private class NodeEventComponentNotStaticResolved : NodeEventBase
+		public class NodeEventComponentNotStaticResolved : NodeEventBase
 		{
 			[SerializeField] public string mFullyQualifiedClassName;
 			[SerializeField] public string mTargetClassName;
@@ -141,6 +141,11 @@ namespace NodeDialog.Events
 		/// True if this node event needs a reference injected to be invoked.
 		/// </summary>
 		public bool needsInjection { get { return mInnerEvent is NodeEventComponentNotStaticResolved; } }
+
+		/// <summary>
+		/// Get the inner event.
+		/// </summary>
+		public NodeEventBase innerEvent { get { return mInnerEvent; } }
 
 		/// <summary>
 		/// Get the type of the component that needs to be injected.
