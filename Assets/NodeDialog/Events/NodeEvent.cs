@@ -26,15 +26,32 @@ namespace NodeDialog.Events
 					trueTarget = resolvedGameObject.GetComponent(mScriptType);
 			}
 
-			if (trueTarget == null)
-				throw new InvalidOperationException("Could not resolve target!");
+			if (trueTarget != null)
+				InvokeInternal(trueTarget);
+			else
+				InvokeInternal_FromName();
+		}
 
-			Type realType = trueTarget.GetType();
+		private void InvokeInternal(Component c)
+		{
+			Type realType = c.GetType();
 			MethodInfo method = realType.GetMethod(mMethodName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
 			if (method == null)
 				throw new InvalidOperationException("Could not find method on target!");
 
-			method.Invoke(trueTarget, null);
+			method.Invoke(c, null);
+		}
+
+		private void InvokeInternal_FromName()
+		{
+			Type type = Type.GetType(mScriptType);
+			if (type == null)
+				throw new InvalidOperationException("Could not find method on target!");
+			MethodInfo method = type.GetMethod(mMethodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
+			if (method == null)
+				throw new InvalidOperationException("Could not find method on target!");
+
+			method.Invoke(null, null);
 		}
 	}
 }

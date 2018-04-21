@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -32,6 +31,11 @@ public class CustomEventDriver : MonoBehaviour
 	public void DoSomethingElse()
 	{
 		Debug.Log("We're doing something else!");
+	}
+
+	public static void KillMeeeehehehehehehehehehehehehehehehe()
+	{
+		Debug.Log("Being killed");
 	}
 }
 
@@ -68,7 +72,21 @@ public class DriverInspector : Editor
 
 		if (objectProp.objectReferenceValue is GameObject)
 		{
-			// we need to get all components, then display all valid methods on them.
+			GameObject go = objectProp.objectReferenceValue as GameObject;
+
+			var methods = new List<MethodInfo>();
+			var methodNames = new List<string>();
+
+			foreach (Component t in go.GetComponents<Component>())
+				methods.AddRange(t.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly));
+
+			methodNames = methods.Select(x => x.Name).ToList();
+			int currentChoice = methodNames.IndexOf(methodName.stringValue);
+			if (currentChoice < 0)
+				currentChoice = 0;
+
+			int choice = EditorGUILayout.Popup(currentChoice, methodNames.ToArray());
+			methodName.stringValue = methodNames[choice];
 		}
 		else if (objectProp.objectReferenceValue is Component)
 		{
@@ -77,6 +95,22 @@ public class DriverInspector : Editor
 			scriptType.stringValue = componentType.Name;
 
 			var methods = componentType.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly).ToList();
+			var methodNames = methods.Select(x => x.Name).ToList();
+			int currentChoice = methodNames.IndexOf(methodName.stringValue);
+			if (currentChoice < 0)
+				currentChoice = 0;
+
+			int choice = EditorGUILayout.Popup(currentChoice, methodNames.ToArray());
+			methodName.stringValue = methodNames[choice];
+		}
+		else if (objectProp.objectReferenceValue is MonoScript)
+		{
+			MonoScript s = objectProp.objectReferenceValue as MonoScript;
+			Type realClass = s.GetClass();
+
+			scriptType.stringValue = realClass.AssemblyQualifiedName;
+
+			var methods = realClass.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).ToList();
 			var methodNames = methods.Select(x => x.Name).ToList();
 			int currentChoice = methodNames.IndexOf(methodName.stringValue);
 			if (currentChoice < 0)
