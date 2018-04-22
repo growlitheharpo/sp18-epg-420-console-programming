@@ -47,6 +47,8 @@ namespace NodeDialog.Events
 
 #pragma warning disable 169
 		// exists only for ease of serialization
+		// otherwise, the editor script would somehow have to find
+		// its way back to the script asset using just the typename.
 		[SerializeField] private TextAsset mTextAsset;
 #pragma warning restore 169
 
