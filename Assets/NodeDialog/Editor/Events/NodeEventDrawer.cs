@@ -235,19 +235,19 @@ namespace NodeDialog.Editor.Events
 				switch (paramType)
 				{
 					case NodeEvent.ParameterType.String:
-						var strVal = innerParamProp.FindPropertyRelative("mStringValue");
+						SerializedProperty strVal = innerParamProp.FindPropertyRelative("mStringValue");
 						strVal.stringValue = EditorGUI.TextField(propRect, strVal.stringValue);
 						break;
 					case NodeEvent.ParameterType.Int:
-						var intVal = innerParamProp.FindPropertyRelative("mIntValue");
+						SerializedProperty intVal = innerParamProp.FindPropertyRelative("mIntValue");
 						intVal.intValue = EditorGUI.IntField(propRect, intVal.intValue);
 						break;
 					case NodeEvent.ParameterType.Float:
-						var floatVal = innerParamProp.FindPropertyRelative("mFloatValue");
+						SerializedProperty floatVal = innerParamProp.FindPropertyRelative("mFloatValue");
 						floatVal.floatValue = EditorGUI.FloatField(propRect, floatVal.floatValue);
 					break;
 					case NodeEvent.ParameterType.Bool:
-						var boolVal = innerParamProp.FindPropertyRelative("mBoolValue");
+						SerializedProperty boolVal = innerParamProp.FindPropertyRelative("mBoolValue");
 						boolVal.boolValue = EditorGUI.Toggle(propRect, boolVal.boolValue);
 						break;
 				}
