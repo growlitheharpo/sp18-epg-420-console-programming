@@ -55,6 +55,8 @@ MonoBehaviour:
   mNodePosition: {x: 132, y: 585}
   mOutConnections: []
   mUserVariables: []
+  mOnStartEvents: []
+  mOnCompleteEvents: []
   mStatement: Have a great day now!
 --- !u!114 &114113996070266816
 MonoBehaviour:
@@ -71,6 +73,8 @@ MonoBehaviour:
   mOutConnections:
   - {fileID: 114003114111322924}
   mUserVariables: []
+  mOnStartEvents: []
+  mOnCompleteEvents: []
   mStatement: Wow, great to hear!
 --- !u!114 &114226135750137466
 MonoBehaviour:
@@ -93,6 +97,8 @@ MonoBehaviour:
     mValue: BobCurious
   - mName: BodyAnimation
     mValue: BobLeanQuestioning
+  mOnStartEvents: []
+  mOnCompleteEvents: []
   mPrompt: What do you think of the weather around here?
 --- !u!114 &114290530044647552
 MonoBehaviour:
@@ -109,6 +115,8 @@ MonoBehaviour:
   mOutConnections:
   - {fileID: 114544045126138230}
   mUserVariables: []
+  mOnStartEvents: []
+  mOnCompleteEvents: []
   mStatement: Yeah, we're having a bit of a rainy season.
 --- !u!114 &114357285539405808
 MonoBehaviour:
@@ -125,6 +133,8 @@ MonoBehaviour:
   mOutConnections:
   - {fileID: 114625884649137810}
   mUserVariables: []
+  mOnStartEvents: []
+  mOnCompleteEvents: []
   mStatement: Well fine then!
 --- !u!114 &114381278330945844
 MonoBehaviour:
@@ -137,7 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ded7a529e447f4c42b1ede86c9476a18, type: 3}
   m_Name: Greeting
   m_EditorClassIdentifier: 
-  mNodePosition: {x: 329, y: 96}
+  mNodePosition: {x: 329, y: 72}
   mOutConnections:
   - {fileID: 114935079853991188}
   mUserVariables:
@@ -145,6 +155,8 @@ MonoBehaviour:
     mValue: BobSmile
   - mName: BodyAnimation
     mValue: StandCurious
+  mOnStartEvents: []
+  mOnCompleteEvents: []
   mStatement: Wow, you're from a land far away?
 --- !u!114 &114462738722200486
 MonoBehaviour:
@@ -174,6 +186,8 @@ MonoBehaviour:
   mNodePosition: {x: 482, y: 582}
   mOutConnections: []
   mUserVariables: []
+  mOnStartEvents: []
+  mOnCompleteEvents: []
   mStatement: Have an awful day.
 --- !u!114 &114544045126138230
 MonoBehaviour:
