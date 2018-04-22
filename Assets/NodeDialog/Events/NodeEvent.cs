@@ -14,6 +14,7 @@ namespace NodeDialog.Events
 			String,
 			Int,
 			Float,
+			Bool,
 		}
 
 		[Serializable]
@@ -22,6 +23,7 @@ namespace NodeDialog.Events
 			[SerializeField] private string mStringValue;
 			[SerializeField] private int mIntValue;
 			[SerializeField] private float mFloatValue;
+			[SerializeField] private bool mBoolValue;
 
 			[SerializeField] private ParameterType mType;
 
@@ -35,6 +37,8 @@ namespace NodeDialog.Events
 						return mIntValue;
 					case ParameterType.Float:
 						return mFloatValue;
+					case ParameterType.Bool:
+						return mBoolValue;
 				}
 
 				return null;
