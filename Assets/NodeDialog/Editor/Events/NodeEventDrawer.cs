@@ -12,6 +12,8 @@ namespace NodeDialog.Editor.Events
 	[CustomPropertyDrawer(typeof(NodeEvent))]
 	public class NodeEventDrawer : PropertyDrawer
 	{
+		private const float FOLDOUT_BUFFER = 4.0f;
+
 		#region TextAsset Access
 
 		private SerializedProperty GetTextAssetProp(SerializedProperty rootProperty)
@@ -79,23 +81,27 @@ namespace NodeDialog.Editor.Events
 
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
 		{
+			if (!property.isExpanded)
+				return EditorGUIUtility.singleLineHeight;
+
 			if (GetTargetType(property) == null)
-				return EditorGUIUtility.singleLineHeight * 2.0f;
+				return EditorGUIUtility.singleLineHeight * 2.0f + FOLDOUT_BUFFER;
 
 			MethodInfo method = GetTargetMethod(property);
 			if (method == null)
-				return EditorGUIUtility.singleLineHeight * 3.0f;
+				return EditorGUIUtility.singleLineHeight * 3.0f + FOLDOUT_BUFFER;
 
-			return EditorGUIUtility.singleLineHeight * (3.0f + method.GetParameters().Length);
+			return EditorGUIUtility.singleLineHeight * (3.0f + method.GetParameters().Length) + FOLDOUT_BUFFER;
 		}
 
 		public override void OnGUI(Rect position, SerializedProperty rootProp, GUIContent label)
 		{
 			Rect r = new Rect(position) { height = EditorGUIUtility.singleLineHeight };
 
-			EditorGUI.LabelField(r, label);
-			r.y += r.height;
+			if (!DrawLabel(r, rootProp, label))
+				return;
 
+			r.y += r.height + FOLDOUT_BUFFER;
 			EditorGUI.indentLevel++;
 
 			Rect labelRect = new Rect(r.x, r.y, EditorGUIUtility.labelWidth, r.height);
@@ -121,6 +127,18 @@ namespace NodeDialog.Editor.Events
 
 			EditorGUI.indentLevel--;
 		}
+
+		private bool DrawLabel(Rect labelRect, SerializedProperty rootProp, GUIContent label)
+		{
+			string labelVal;
+			if (GetTargetType(rootProp) != null)
+				labelVal = label.text + ": " + GetTargetType(rootProp).Name + "::" + GetTargetMethodName(rootProp);
+			else
+				labelVal = label.text;
+
+			rootProp.isExpanded = EditorGUI.Foldout(labelRect, rootProp.isExpanded, labelVal, true);
+			return rootProp.isExpanded;
+        }
 
 		private bool DrawScriptZone(Rect labelRect, Rect propRect, SerializedProperty rootProperty)
 		{
@@ -195,6 +213,9 @@ namespace NodeDialog.Editor.Events
 		{
 			SerializedProperty listProp = GetParameterListProp(rootProp);
 			var parameters = GetTargetMethod(rootProp).GetParameters();
+
+			if (listProp.arraySize != parameters.Length)
+				GenerateParameters(rootProp, GetTargetMethod(rootProp));
 			
 			// properties should be pre-filled with the correct type.
 
@@ -209,7 +230,8 @@ namespace NodeDialog.Editor.Events
 
 				NodeEvent.ParameterType paramType = (NodeEvent.ParameterType)innerParamProp.FindPropertyRelative("mType").enumValueIndex;
 
-				EditorGUI.LabelField(labelRect, parameters[i].Name);
+				string label = string.Format("({0}) {1}", paramType.ToString(), parameters[i].Name);
+				EditorGUI.LabelField(labelRect, label);
 				switch (paramType)
 				{
 					case NodeEvent.ParameterType.String:
@@ -247,7 +269,6 @@ namespace NodeDialog.Editor.Events
 			SerializedProperty listProp = GetParameterListProp(rootProp);
 			var parameters = validMethod.GetParameters();
 
-			listProp.arraySize = 0;
 			listProp.arraySize = parameters.Length;
 			for (int i = 0; i < listProp.arraySize; ++i)
 			{

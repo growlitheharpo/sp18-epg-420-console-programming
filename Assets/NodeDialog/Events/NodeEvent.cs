@@ -52,20 +52,26 @@ namespace NodeDialog.Events
 		[SerializeField] private TextAsset mTextAsset;
 #pragma warning restore 169
 
+#pragma warning disable 649
+		// Collection is updated through the inspector
+		[SerializeField] private List<EventParameter> mParameters;
+#pragma warning restore 649
+
 		[SerializeField] private string mTypeName;
 		[SerializeField] private string mMethodName;
 
-		[SerializeField] private List<EventParameter> mParameters;
-
 		public void Invoke()
 		{
+			if (string.IsNullOrEmpty(mTypeName) || string.IsNullOrEmpty(mMethodName))
+				return;
+
 			Type t = Type.GetType(mTypeName);
 			if (t == null)
 				throw new InvalidOperationException("Cannot access type: " + mTypeName);
 
 			MethodInfo m = t.GetMethod(mMethodName, BindingFlags.Public | BindingFlags.Static);
 			if (m == null)
-				throw new InvalidOperationException("Cannot access method " + mMethodName + " on type " + mTypeName);
+				throw new InvalidOperationException("Cannot access method \"" + mMethodName + "\" on type " + mTypeName);
 
 			if (mParameters.Count == 0)
 				m.Invoke(null, null);
