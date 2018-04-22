@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NodeDialog.Events;
@@ -22,7 +23,7 @@ namespace NodeDialog.Editor.Events
 		{
 			return GetTextAssetProp(rootProperty).objectReferenceValue;
 		}
-		
+
 		#endregion
 
 		#region Type Access
@@ -63,6 +64,15 @@ namespace NodeDialog.Editor.Events
 				return null;
 
 			return type.GetMethod(GetTargetMethodName(rootProp), BindingFlags.Static | BindingFlags.Public);
+		}
+
+		#endregion
+
+		#region Parameter Access
+
+		private SerializedProperty GetParameterListProp(SerializedProperty rootProperty)
+		{
+			return rootProperty.FindPropertyRelative("mParameters");
 		}
 
 		#endregion
@@ -127,7 +137,9 @@ namespace NodeDialog.Editor.Events
 			if (t == null)
 				return;
 
-			var validMethods = t.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly);
+			IList<MethodInfo> validMethods = t.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly);
+			validMethods = ValidateMethods(validMethods);
+
 			var methodNames = validMethods.Select(x => x.Name).ToList();
 			methodNames.Insert(0, "   ");
 
@@ -138,11 +150,89 @@ namespace NodeDialog.Editor.Events
 			EditorGUI.LabelField(labeRect, "Target Method");
 			currentIndex = EditorGUI.Popup(propRect, currentIndex, methodNames.ToArray());
 
-			// >= 1 instead of 0 because of the blank we put at the front
 			if (currentIndex >= 1)
-				methodProp.stringValue = methodNames[currentIndex];
+			{
+				var newValue = methodNames[currentIndex];
+				if (methodProp.stringValue == newValue)
+					return;
+
+				methodProp.stringValue = newValue;
+				GenerateParameters(rootProp, validMethods[currentIndex - 1]);
+			}
 			else
+			{
 				methodProp.stringValue = "";
+				ClearParameters(rootProp);
+			}
+		}
+		/// <summary>
+		/// Generate the sub-properties for all the parameters that we have.
+		/// </summary>
+		/// <param name="rootProp">The root property.</param>
+		/// <param name="validMethod">The method that this event is going to call.</param>
+		private void GenerateParameters(SerializedProperty rootProp, MethodInfo validMethod)
+		{
+			SerializedProperty listProp = GetParameterListProp(rootProp);
+			var parameters = validMethod.GetParameters();
+
+			listProp.arraySize = 0;
+			listProp.arraySize = parameters.Length;
+			for (int i = 0; i < listProp.arraySize; ++i)
+			{
+				SerializedProperty typeProp = listProp.GetArrayElementAtIndex(i).FindPropertyRelative("mType");
+
+				if (parameters[i].ParameterType == typeof(string))
+					typeProp.enumValueIndex = (int)NodeEvent.ParameterType.String;
+				else if (parameters[i].ParameterType == typeof(int))
+					typeProp.enumValueIndex = (int)NodeEvent.ParameterType.Int;
+				else
+					typeProp.enumValueIndex = (int)NodeEvent.ParameterType.Float;
+			}
+		}
+
+		/// <summary>
+		/// Clears the list of parameters that this node event has saved.
+		/// </summary>
+		/// <param name="rootProp">The root property.</param>
+		private void ClearParameters(SerializedProperty rootProp)
+		{
+			SerializedProperty listProp = GetParameterListProp(rootProp);
+			listProp.arraySize = 0;
+		}
+
+		/// <summary>
+		/// Validate the list of methods that Reflection has found.
+		/// Checks to ensure that their parameters are all something we can provide.
+		/// </summary>
+		private List<MethodInfo> ValidateMethods(IList<MethodInfo> validMethods)
+		{
+			var result = new List<MethodInfo>(validMethods.Count);
+			foreach (MethodInfo method in validMethods)
+			{
+				bool isValid = true;
+				var paramList = method.GetParameters();
+				foreach (ParameterInfo param in paramList)
+				{
+					if (param.IsOut)
+					{
+						isValid = false;
+						break;
+					}
+
+					// If it has a default value, we can safely ignore it.
+					if ((param.Attributes & ParameterAttributes.HasDefault) != ParameterAttributes.None)
+						continue;
+
+					Type paramType = param.ParameterType;
+					if (paramType != typeof(int) && paramType != typeof(string) && paramType != typeof(float))
+						isValid = false;
+				}
+
+				if (isValid)
+					result.Add(method);
+			}
+
+			return result;
 		}
 	}
 }

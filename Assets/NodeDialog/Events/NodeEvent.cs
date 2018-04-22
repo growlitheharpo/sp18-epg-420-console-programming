@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -7,6 +9,38 @@ namespace NodeDialog.Events
 	[Serializable]
 	public class NodeEvent
 	{
+		public enum ParameterType
+		{
+			String,
+			Int,
+			Float,
+		}
+
+		[Serializable]
+		public class EventParameter
+		{
+			[SerializeField] private string mStringValue;
+			[SerializeField] private int mIntValue;
+			[SerializeField] private float mFloatValue;
+
+			[SerializeField] private ParameterType mType;
+
+			public object GetValue()
+			{
+				switch (mType)
+				{
+					case ParameterType.String:
+						return mStringValue;
+					case ParameterType.Int:
+						return mIntValue;
+					case ParameterType.Float:
+						return mFloatValue;
+				}
+
+				return null;
+			}
+		}
+
 #pragma warning disable 169
 		// exists only for ease of serialization
 		[SerializeField] private TextAsset mTextAsset;
@@ -14,6 +48,8 @@ namespace NodeDialog.Events
 
 		[SerializeField] private string mTypeName;
 		[SerializeField] private string mMethodName;
+
+		[SerializeField] private List<EventParameter> mParameters;
 
 		public void Invoke()
 		{
@@ -25,7 +61,10 @@ namespace NodeDialog.Events
 			if (m == null)
 				throw new InvalidOperationException("Cannot access method " + mMethodName + " on type " + mTypeName);
 
-			m.Invoke(null, null);
+			if (mParameters.Count == 0)
+				m.Invoke(null, null);
+			else
+				InvokeWithParameters(m);
 		}
 
 		public void Invoke(object[] args)
@@ -39,6 +78,12 @@ namespace NodeDialog.Events
 				throw new InvalidOperationException("Cannot access method " + mMethodName + " on type " + mTypeName);
 
 			m.Invoke(null, args);
+		}
+
+		private void InvokeWithParameters(MethodInfo methodInfo)
+		{
+			var finalParams = mParameters.Select(x => x.GetValue()).ToArray();
+			methodInfo.Invoke(null, finalParams);
 		}
 	}
 }
