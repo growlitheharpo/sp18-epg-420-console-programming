@@ -7,24 +7,37 @@ namespace NodeDialog.Editor
 	public abstract class BaseNodeEditor : UnityEditor.Editor
 	{
 		private ReorderableList mUserVariableList;
+		private ReorderableList mPreEventList;
+		private ReorderableList mPostEventList;
 
-		/// <summary>
-		/// Handle the Editor being enabled.
-		/// </summary>
-		protected virtual void OnEnable()
+        /// <summary>
+        /// Handle the Editor being enabled.
+        /// </summary>
+        protected virtual void OnEnable()
 		{
-			mUserVariableList = new ReorderableList(serializedObject, serializedObject.FindProperty("mUserVariables"))
+			mUserVariableList = InitializeList("mUserVariables", "User Variables");
+			mPreEventList = InitializeList("mOnStartEvents", "OnEnter Events", 8.0f);
+			mPostEventList = InitializeList("mOnCompleteEvents", "OnExit Events", 8.0f);
+		}
+
+		private ReorderableList InitializeList(string propertyName, string label, float sizeAdjust = 0.0f)
+		{
+			return new ReorderableList(serializedObject, serializedObject.FindProperty(propertyName))
 			{
-				drawHeaderCallback = (rect) => { EditorGUI.LabelField(rect, "User Variables"); },
+				drawHeaderCallback = (rect) => { EditorGUI.LabelField(rect, label); },
 				drawElementCallback = (rect, i, active, focused) =>
 				{
-					SerializedProperty prop = mUserVariableList.serializedProperty.GetArrayElementAtIndex(i);
+					SerializedProperty prop = serializedObject.FindProperty(propertyName).GetArrayElementAtIndex(i);
+
+					rect.x += sizeAdjust;
+					rect.width -= sizeAdjust;
+
 					EditorGUI.PropertyField(rect, prop, true);
 				},
-				elementHeightCallback = (i) =>
-				{ 
-					SerializedProperty prop = mUserVariableList.serializedProperty.GetArrayElementAtIndex(i);
-					return DialogNodeUserVariableDrawer.GetHeight(prop);
+				elementHeightCallback = i =>
+				{
+					SerializedProperty prop = serializedObject.FindProperty(propertyName).GetArrayElementAtIndex(i);
+                    return EditorGUI.GetPropertyHeight(prop, true);
 				}
 			};
 		}
@@ -42,14 +55,14 @@ namespace NodeDialog.Editor
 			target.name = newName;
 		}
 
-		/// <summary>
-		/// Shorthand for EditorGUILayout.PropertyField
-		/// </summary>
-		/// <param name="name">The name of the property to draw.</param>
-		/// <param name="withChildren">Whether to include the property's children.</param>
-		protected void DrawSingleProperty(string name, bool withChildren = true)
+        /// <summary>
+        /// Shorthand for EditorGUILayout.PropertyField
+        /// </summary>
+		/// <param name="propName">The name of the property to draw.</param>
+        /// <param name="withChildren">Whether to include the property's children.</param>
+        protected void DrawSingleProperty(string propName, bool withChildren = true)
 		{
-			var prop = serializedObject.FindProperty(name);
+			SerializedProperty prop = serializedObject.FindProperty(propName);
 			EditorGUILayout.PropertyField(prop, withChildren);
 		}
 
@@ -59,19 +72,12 @@ namespace NodeDialog.Editor
 		protected void DrawUserVariables()
 		{
 			mUserVariableList.DoLayoutList();
-			//var prop = serializedObject.FindProperty("mUserVariables");
-			//EditorGUILayout.PropertyField(prop, true);
-			//	EditorGUI.indentLevel++;
+		}
 
-			//	prop.arraySize = EditorGUILayout.DelayedIntField(prop.arraySize, "Count");
-
-			//	for (int i = 0; i < prop.arraySize; ++i)
-			//	{
-			//		var inner = prop.GetArrayElementAtIndex(i);
-			//		EditorGUILayout.PropertyField(inner);
-			//	}
-
-			//	EditorGUI.indentLevel--;
+		protected void DrawEvents()
+		{
+			mPreEventList.DoLayoutList();
+			mPostEventList.DoLayoutList();
 		}
 	}
 

@@ -13,6 +13,7 @@ namespace NodeDialog.Editor
 			DrawNameField();
 			DrawSingleProperty("mPrompt");
 			DrawUserVariables();
+			DrawEvents();
 
 			serializedObject.ApplyModifiedProperties();
 		}

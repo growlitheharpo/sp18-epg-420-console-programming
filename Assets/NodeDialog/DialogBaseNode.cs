@@ -1,6 +1,7 @@
 ﻿using NodeDialog.Graph;
 using System;
 using System.Collections.Generic;
+using NodeDialog.Events;
 using UnityEngine;
 
 namespace NodeDialog
@@ -34,6 +35,9 @@ namespace NodeDialog
 		[SerializeField] private List<UserVariable> mUserVariables;
 		private Dictionary<string, string> mCachedDictionaryCopy;
 
+		[SerializeField] private List<NodeEvent> mOnStartEvents;
+		[SerializeField] private List<NodeEvent> mOnCompleteEvents;
+
 		public List<UserVariable> userVariableList
 		{
 			get { return mUserVariables; }
@@ -53,5 +57,9 @@ namespace NodeDialog
 				return mCachedDictionaryCopy;
 			}
 		}
+
+		public List<NodeEvent> onStartEvents { get { return mOnStartEvents; } }
+
+		public List<NodeEvent> onCompleteEvents { get { return mOnCompleteEvents; } }
 	}
 }
