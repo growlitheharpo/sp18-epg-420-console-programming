@@ -74,6 +74,9 @@ namespace NodeDialog.Editor
 			mUserVariableList.DoLayoutList();
 		}
 
+		/// <summary>
+        /// Draw the event lists for this dialog node.
+        /// </summary>
 		protected void DrawEvents()
 		{
 			mPreEventList.DoLayoutList();

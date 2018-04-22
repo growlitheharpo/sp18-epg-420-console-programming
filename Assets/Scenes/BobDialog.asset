@@ -98,7 +98,27 @@ MonoBehaviour:
   - mName: BodyAnimation
     mValue: BobLeanQuestioning
   mOnStartEvents: []
-  mOnCompleteEvents: []
+  mOnCompleteEvents:
+  - mTextAsset: {fileID: 11500000, guid: 4ab6eea3c7da18f4d8dd613ffabc75de, type: 3}
+    mParameters:
+    - mStringValue: This is a sample!
+      mIntValue: 0
+      mFloatValue: 0
+      mBoolValue: 0
+      mType: 0
+    mTypeName: NodeDialog.Samples.SampleDialogFunctions, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    mMethodName: DebugPrint
+  - mTextAsset: {fileID: 11500000, guid: 4ab6eea3c7da18f4d8dd613ffabc75de, type: 3}
+    mParameters:
+    - mStringValue: This is another sample!
+      mIntValue: 0
+      mFloatValue: 0
+      mBoolValue: 0
+      mType: 0
+    mTypeName: NodeDialog.Samples.SampleDialogFunctions, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    mMethodName: DebugPrint
   mPrompt: What do you think of the weather around here?
 --- !u!114 &114290530044647552
 MonoBehaviour:

@@ -58,7 +58,7 @@ namespace NodeDialog.Samples
 				}
 			}
 
-			ExecutePostEvents(statement);
+			ExecutePostEvents(currentNode);
 		}
 
 		private void ExecutePreEvents(DialogBaseNode node)
